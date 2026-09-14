@@ -67,6 +67,26 @@ The web server only binds to `127.0.0.1` by default. No telemetry or cloud servi
 - **Parser/extractor incompatibility:** the dashboard reports the error instead of silently discarding it.
 - **Port changed:** restart the application and update the OBS URL.
 
+## Known limitation: update delay
+
+HotS decides when it writes live match state to `StormSave`. In testing, writes usually happen around every 90 seconds, so a newly selected talent can take roughly 90–120 seconds to appear. HotSTalentOverlay processes the file immediately after it changes, but it cannot reliably detect a choice before the game persists it. The project deliberately avoids process injection, memory reading, keyboard hooks, and resolution-dependent screen recognition.
+
+## Credits and third-party work
+
+HotSTalentOverlay builds on excellent open-source work by other developers:
+
+- [HeroesDataParser](https://github.com/HeroesToolChest/HeroesDataParser) 5.0.4, created by **Kevin Oliva and contributors** (MIT), reads the local CASC installation and extracts hero metadata and talent icons.
+- [Heroes.StormReplayParser](https://github.com/HeroesToolChest/Heroes.StormReplayParser) 2.2.1, created by **Kevin Oliva and contributors** (MIT), provides the replay and tracker-event decoding. This repository vendors a small, documented compatibility adaptation for current `StormSave` files.
+- [Heroes.MpqTool](https://github.com/HeroesToolChest/Heroes.MpqTool) 1.2.0, created by **Kevin Oliva and contributors** (MIT), is used transitively to read Blizzard MPQ containers.
+- [.NET and ASP.NET Core](https://github.com/dotnet) by **Microsoft and .NET contributors** (MIT) provide the application runtime and local web server.
+- [xUnit.net](https://github.com/xunit/xunit) v3 by **James Newkirk, Brad Wilson, and contributors** (Apache-2.0) provides the test framework.
+
+The [Heroes Profile Uploader](https://github.com/Heroes-Profile/HeroesProfile.Uploader) was used as an architectural reference for resilient `StormSave` watching, but none of its source code or services are included.
+
+Thank you to every maintainer and contributor behind these projects. Full version, copyright, and license notices are in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+*Heroes of the Storm* and its assets are property of Blizzard Entertainment. HotSTalentOverlay is an independent community project and is not affiliated with or endorsed by Blizzard Entertainment.
+
 ## Development
 
 ```powershell
@@ -145,6 +165,26 @@ El servidor web sólo escucha en `127.0.0.1` de forma predeterminada. No utiliza
 - **Error de extracción:** revisa `logs/latest.log`. Si una regeneración falla, se conserva el último catálogo funcional.
 - **Parser o extractor incompatible:** el panel muestra el error en lugar de ignorarlo silenciosamente.
 - **Puerto modificado:** reinicia la aplicación y actualiza la URL de OBS.
+
+## Limitación conocida: retraso de actualización
+
+HotS decide cuándo escribe el estado de la partida en `StormSave`. En las pruebas, las escrituras suelen producirse aproximadamente cada 90 segundos, por lo que un talento recién elegido puede tardar unos 90–120 segundos en aparecer. HotSTalentOverlay procesa el archivo inmediatamente después del cambio, pero no puede conocer la elección de forma fiable antes de que el juego la guarde. El proyecto evita deliberadamente la inyección en el proceso, la lectura de memoria, los hooks de teclado y el reconocimiento de pantalla dependiente de la resolución.
+
+## Créditos y trabajo de terceros
+
+HotSTalentOverlay se apoya en el excelente trabajo open source de otros desarrolladores:
+
+- [HeroesDataParser](https://github.com/HeroesToolChest/HeroesDataParser) 5.0.4, creado por **Kevin Oliva y colaboradores** (MIT), lee la instalación CASC local y extrae los metadatos de héroes y los iconos de talentos.
+- [Heroes.StormReplayParser](https://github.com/HeroesToolChest/Heroes.StormReplayParser) 2.2.1, creado por **Kevin Oliva y colaboradores** (MIT), proporciona la decodificación de replays y eventos del tracker. Este repositorio incluye una pequeña adaptación de compatibilidad documentada para los `StormSave` actuales.
+- [Heroes.MpqTool](https://github.com/HeroesToolChest/Heroes.MpqTool) 1.2.0, creado por **Kevin Oliva y colaboradores** (MIT), se utiliza de forma transitiva para leer los contenedores MPQ de Blizzard.
+- [.NET y ASP.NET Core](https://github.com/dotnet) de **Microsoft y los colaboradores de .NET** (MIT) proporcionan el runtime y el servidor web local.
+- [xUnit.net](https://github.com/xunit/xunit) v3 de **James Newkirk, Brad Wilson y colaboradores** (Apache-2.0) proporciona el framework de pruebas.
+
+El [uploader de Heroes Profile](https://github.com/Heroes-Profile/HeroesProfile.Uploader) se utilizó como referencia arquitectónica para la vigilancia robusta de `StormSave`, pero no se incluye su código ni se utilizan sus servicios.
+
+Gracias a todos los mantenedores y colaboradores de estos proyectos. Los avisos completos de versiones, copyright y licencias están en [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+*Heroes of the Storm* y sus recursos pertenecen a Blizzard Entertainment. HotSTalentOverlay es un proyecto comunitario independiente, sin afiliación ni respaldo de Blizzard Entertainment.
 
 ## Desarrollo
 
