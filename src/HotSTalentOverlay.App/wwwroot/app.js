@@ -113,6 +113,7 @@ function render(next) {
     box.append(label);
     return box;
   }));
+  requestAnimationFrame(fitPreview);
 }
 
 async function post(url, body) {
@@ -166,6 +167,17 @@ function updateOutputs() {
 function previewStyle() {
   const frame = $('#overlay-preview');
   frame.contentWindow?.postMessage({ type: 'overlay-style-preview', style: readStyleForm() }, location.origin);
+  requestAnimationFrame(fitPreview);
+}
+
+function fitPreview() {
+  const frame = $('#overlay-preview');
+  const stage = frame.closest('.preview-stage');
+  const overlay = frame.contentDocument?.querySelector('#overlay');
+  if (!stage || !overlay) return;
+  const contentWidth = Math.max(overlay.getBoundingClientRect().width + 36, 1);
+  const availableWidth = Math.max(stage.clientWidth - 36, 1);
+  frame.style.setProperty('--preview-scale', Math.min(1, availableWidth / contentWidth).toFixed(3));
 }
 
 async function saveConfig(next, successMessage = t('saved')) {
@@ -224,7 +236,8 @@ $('#copy').addEventListener('click', async () => { try { await navigator.clipboa
 $('#demo').addEventListener('click', async () => { try { await post('/api/demo'); showToast(t('demoLoaded')); } catch (error) { showToast(error.message, true); } });
 $('#regenerate').addEventListener('click', async () => { try { await post('/api/catalog/regenerate'); showToast(t('catalogQueued')); } catch (error) { showToast(error.message, true); } });
 $('#reset').addEventListener('click', async () => { try { await post('/api/match/reset'); showToast(t('matchReset')); } catch (error) { showToast(error.message, true); } });
-$('#overlay-preview').addEventListener('load', previewStyle);
+$('#overlay-preview').addEventListener('load', () => { previewStyle(); fitPreview(); });
+new ResizeObserver(fitPreview).observe($('.preview-stage'));
 
 load().catch(error => showToast(error.message, true));
 const events = new EventSource('/events');
