@@ -65,8 +65,8 @@
             <legend data-i18n="colors">Colores</legend>
             <div class="color-grid">
               <label class="color-field"><span data-i18n="accent">Acento</span><span><input id="accentColor" type="color"><output for="accentColor"></output></span></label>
-              <label class="color-field"><span data-i18n="borderColor">Borde vacío</span><span><input id="borderColor" type="color"><output for="borderColor"></output></span></label>
-              <label class="color-field"><span data-i18n="backgroundColor">Fondo</span><span><input id="backgroundColor" type="color"><output for="backgroundColor"></output></span></label>
+              <label class="color-field"><span data-i18n="borderColor">Color de huecos vacíos</span><span><input id="borderColor" type="color"><output for="borderColor"></output></span></label>
+              <label class="color-field"><span data-i18n="backgroundColor">Fondo del hueco</span><span><input id="backgroundColor" type="color"><output for="backgroundColor"></output></span></label>
               <label class="color-field"><span data-i18n="textColor">Texto</span><span><input id="textColor" type="color"><output for="textColor"></output></span></label>
             </div>
           </fieldset>
@@ -76,7 +76,7 @@
             <div class="control-grid">
               <label><span data-i18n="borderStyle">Estilo del borde</span><select id="borderStyle"><option value="solid" data-i18n="solid">Sólido</option><option value="double" data-i18n="double">Doble</option><option value="dashed" data-i18n="dashed">Discontinuo</option><option value="none" data-i18n="none">Ninguno</option></select></label>
               <label><span data-i18n="iconSize">Tamaño del icono</span><span class="range-row"><input id="iconSize" type="range" min="40" max="160" step="2"><output for="iconSize"></output></span></label>
-              <label><span data-i18n="borderWidth">Grosor del borde</span><span class="range-row"><input id="borderWidth" type="range" min="0" max="8"><output for="borderWidth"></output></span></label>
+              <label id="borderWidthControl"><span data-i18n="borderWidth">Grosor del borde</span><span class="range-row"><input id="borderWidth" type="range" min="0" max="8"><output for="borderWidth"></output></span></label>
               <label><span data-i18n="rounding">Redondeado</span><span class="range-row"><input id="borderRadius" type="range" min="0" max="32" step="2"><output for="borderRadius"></output></span></label>
               <label><span data-i18n="spacing">Separación</span><span class="range-row"><input id="gap" type="range" min="0" max="40" step="2"><output for="gap"></output></span></label>
             </div>
@@ -86,8 +86,8 @@
             <legend data-i18n="motion">Movimiento</legend>
             <div class="control-grid">
               <label><span data-i18n="entryAnimation">Al aparecer</span><select id="entryAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="fade" data-i18n="fade">Fundido</option><option value="slide" data-i18n="slide">Deslizamiento</option><option value="pop" data-i18n="pop">Salto</option><option value="flip" data-i18n="flip">Giro</option></select></label>
-              <div class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto sin guardar</span><button id="previewEntry" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewAnimation">Probar aparición</span></button></div>
-              <label class="wide-control"><span data-i18n="animationSpeed">Velocidad de aparición</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
+              <div id="previewAnimationControl" class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto sin guardar</span><button id="previewEntry" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewAnimation">Probar aparición</span></button></div>
+              <label id="animationSpeedControl" class="wide-control"><span data-i18n="animationSpeed">Velocidad de aparición</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
             </div>
           </fieldset>
 
@@ -100,7 +100,7 @@
             </div>
           </fieldset>
 
-          <button class="button primary save-style" type="submit" data-i18n="saveAppearance">Guardar apariencia</button>
+          <div class="save-bar"><span id="style-save-state" class="save-state" role="status" data-i18n="appearanceSaved">Apariencia guardada</span><button class="button primary save-style" type="submit" data-i18n="saveAppearance">Guardar apariencia</button></div>
         </form>
       </section>
 
@@ -108,19 +108,20 @@
         <section class="panel preview-panel">
           <div class="section-heading"><div><span class="eyebrow" data-i18n="livePreview">PREVIEW EN DIRECTO</span><h2 data-i18n="obsResult">Así se verá en OBS</h2></div><span class="live-dot"><i></i><span data-i18n="live">En vivo</span></span></div>
           <div class="preview-stage"><iframe id="overlay-preview" src="/overlay.html?preview=1" data-i18n-title="overlayPreview" title="Preview del overlay"></iframe></div>
-          <button id="demo" class="button secondary full" type="button" data-i18n="loadDemo">Cargar demo</button>
+          <button id="demo" class="button secondary full" type="button" data-i18n="loadDemo">Usar partida de demostración</button>
+          <p class="action-help" data-i18n="demoHelp">Sustituye temporalmente la partida mostrada también en OBS.</p>
         </section>
 
         <section class="panel obs-panel">
           <span class="eyebrow">OBS BROWSER SOURCE</span>
           <div class="url-row"><code id="obs-url"></code><button id="copy" class="icon-button" type="button" data-i18n-aria="copyUrl" aria-label="Copiar URL">⧉</button></div>
-          <div class="button-row"><a class="button secondary" href="/overlay.html" target="_blank" rel="noopener" data-i18n="openPreview">Abrir overlay</a><button id="reset" class="button quiet" type="button" data-i18n="resetMatch">Resetear partida</button></div>
+          <div class="button-row"><a class="button secondary" href="/overlay.html" target="_blank" rel="noopener" data-i18n="openPreview">Abrir overlay</a></div>
         </section>
       </aside>
     </div>
 
     <section class="panel settings-panel">
-      <div class="section-heading"><div><span class="eyebrow" data-i18n="advanced">AVANZADO</span><h2 data-i18n="connectionSettings">Juego y conexión</h2></div><button id="regenerate" class="button quiet compact" type="button" data-i18n="regenerate">Regenerar catálogo</button></div>
+      <div class="section-heading"><div><span class="eyebrow" data-i18n="advanced">AVANZADO</span><h2 data-i18n="connectionSettings">Juego y conexión</h2></div><div class="advanced-actions"><button id="reset" class="button quiet compact danger" type="button" data-i18n="resetMatch">Vaciar partida detectada</button><button id="regenerate" class="button quiet compact" type="button" data-i18n="regenerate">Regenerar catálogo</button></div></div>
       <form id="config-form" class="settings-form">
         <label><span>BattleTag</span><input id="battleTag" data-i18n-placeholder="battleTagPlaceholder" placeholder="Nombre#1234"></label>
         <label class="wide"><span data-i18n="hotsPath">Ruta de HotS</span><input id="hotsPath" placeholder="C:\Program Files (x86)\Heroes of the Storm"></label>

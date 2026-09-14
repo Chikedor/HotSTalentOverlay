@@ -11,13 +11,13 @@ const i18n = {
     skip: 'Saltar al contenido', localControl: 'CONTROL LOCAL', tagline: 'Tus talentos en OBS, automáticamente y sin salir de tu PC.', language: 'Idioma', interfaceLanguage: 'Idioma de la interfaz', status: 'Estado', overlayPreview: 'Preview del overlay',
     localCatalog: 'CATÁLOGO LOCAL', liveDetector: 'DETECTOR EN DIRECTO', currentMatch: 'PARTIDA ACTUAL', appearance: 'APARIENCIA',
     customizeOverlay: 'Personaliza tus talentos', restoreDefaults: 'Restaurar', appearanceHelp: 'Prueba los cambios al instante y guárdalos cuando estés satisfecho.',
-    colors: 'Colores', accent: 'Acento', borderColor: 'Borde vacío', backgroundColor: 'Fondo', textColor: 'Texto', shapeSpacing: 'Forma y espaciado',
+    colors: 'Colores', accent: 'Acento', borderColor: 'Color de huecos vacíos', backgroundColor: 'Fondo del hueco', textColor: 'Texto', shapeSpacing: 'Forma y espaciado',
     borderStyle: 'Estilo del borde', solid: 'Sólido', double: 'Doble', dashed: 'Discontinuo', none: 'Ninguno', iconSize: 'Tamaño del icono',
     borderWidth: 'Grosor del borde', rounding: 'Redondeado', spacing: 'Separación', motion: 'Movimiento', entryAnimation: 'Al aparecer',
     fade: 'Fundido', slide: 'Deslizamiento', pop: 'Salto', flip: 'Giro', previewAnimation: 'Probar aparición', previewAnimationHelp: 'Comprueba el efecto sin guardar',
     animationSpeed: 'Velocidad de aparición', visibleInfo: 'Información visible', showHero: 'Nombre del héroe', showLevels: 'Niveles', showTalentNames: 'Nombres de talentos',
-    saveAppearance: 'Guardar apariencia', livePreview: 'PREVIEW EN DIRECTO', obsResult: 'Así se verá en OBS', live: 'En vivo', loadDemo: 'Cargar demo',
-    copyUrl: 'Copiar URL', openPreview: 'Abrir overlay', resetMatch: 'Resetear partida', advanced: 'AVANZADO', connectionSettings: 'Juego y conexión',
+    saveAppearance: 'Guardar apariencia', appearanceSaved: 'Apariencia guardada', unsavedChanges: 'Cambios sin guardar', livePreview: 'PREVIEW EN DIRECTO', obsResult: 'Así se verá en OBS', live: 'En vivo', loadDemo: 'Usar partida de demostración', demoHelp: 'Sustituye temporalmente la partida mostrada también en OBS.',
+    copyUrl: 'Copiar URL', openPreview: 'Abrir overlay', resetMatch: 'Vaciar partida detectada', advanced: 'AVANZADO', connectionSettings: 'Juego y conexión',
     regenerate: 'Regenerar catálogo', battleTagPlaceholder: 'Nombre#1234', hotsPath: 'Ruta de HotS', accountsFolder: 'Carpeta Accounts', autoDetect: 'Se detecta automáticamente',
     obsPort: 'Puerto OBS', gameDataLanguage: 'Idioma de talentos', saveSettings: 'Guardar configuración', privacyFooter: '100 % local · Sin telemetría · Tus partidas no salen de este equipo',
     ready: 'Todo listo', attention: 'Requiere atención', searching: 'Buscando…', notDetected: 'No detectado', configurePath: 'Configura la ruta abajo', pending: 'Pendiente',
@@ -30,12 +30,12 @@ const i18n = {
     skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview',
     localCatalog: 'LOCAL CATALOG', liveDetector: 'LIVE DETECTOR', currentMatch: 'CURRENT MATCH', appearance: 'APPEARANCE',
     customizeOverlay: 'Customize your talents', restoreDefaults: 'Restore', appearanceHelp: 'Try changes instantly and save them when you are happy.',
-    colors: 'Colors', accent: 'Accent', borderColor: 'Empty border', backgroundColor: 'Background', textColor: 'Text', shapeSpacing: 'Shape and spacing',
+    colors: 'Colors', accent: 'Accent', borderColor: 'Empty slot color', backgroundColor: 'Slot background', textColor: 'Text', shapeSpacing: 'Shape and spacing',
     borderStyle: 'Border style', solid: 'Solid', double: 'Double', dashed: 'Dashed', none: 'None', iconSize: 'Icon size', borderWidth: 'Border width',
     rounding: 'Corner radius', spacing: 'Spacing', motion: 'Motion', entryAnimation: 'On appearance', fade: 'Fade', slide: 'Slide',
     pop: 'Pop', flip: 'Flip', previewAnimation: 'Preview appearance', previewAnimationHelp: 'Check the effect without saving', animationSpeed: 'Appearance speed', visibleInfo: 'Visible information',
-    showHero: 'Hero name', showLevels: 'Levels', showTalentNames: 'Talent names', saveAppearance: 'Save appearance', livePreview: 'LIVE PREVIEW',
-    obsResult: 'How it will look in OBS', live: 'Live', loadDemo: 'Load demo', copyUrl: 'Copy URL', openPreview: 'Open overlay', resetMatch: 'Reset match',
+    showHero: 'Hero name', showLevels: 'Levels', showTalentNames: 'Talent names', saveAppearance: 'Save appearance', appearanceSaved: 'Appearance saved', unsavedChanges: 'Unsaved changes', livePreview: 'LIVE PREVIEW',
+    obsResult: 'How it will look in OBS', live: 'Live', loadDemo: 'Use demo match', demoHelp: 'Temporarily replaces the match shown in OBS too.', copyUrl: 'Copy URL', openPreview: 'Open overlay', resetMatch: 'Clear detected match',
     advanced: 'ADVANCED', connectionSettings: 'Game and connection', regenerate: 'Regenerate catalog', battleTagPlaceholder: 'Name#1234', hotsPath: 'HotS path',
     accountsFolder: 'Accounts folder', autoDetect: 'Detected automatically', obsPort: 'OBS port', gameDataLanguage: 'Talent language', saveSettings: 'Save settings',
     privacyFooter: '100% local · No telemetry · Your matches never leave this computer', ready: 'Everything ready', attention: 'Needs attention', searching: 'Searching…',
@@ -51,6 +51,7 @@ let appState;
 let configState;
 let language = 'es';
 let toastTimer;
+let styleDirty = false;
 
 function t(key, values = {}) {
   let value = i18n[language]?.[key] ?? i18n.es[key] ?? key;
@@ -70,6 +71,7 @@ function applyLanguage(nextLanguage) {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(element => { element.placeholder = t(element.dataset.i18nPlaceholder); });
   document.querySelectorAll('[data-i18n-aria]').forEach(element => { element.setAttribute('aria-label', t(element.dataset.i18nAria)); });
   document.querySelectorAll('[data-i18n-title]').forEach(element => { element.title = t(element.dataset.i18nTitle); });
+  if ($('#style-save-state')) setStyleDirty(styleDirty);
   if (appState) render(appState);
 }
 
@@ -145,6 +147,7 @@ function fillStyleForm(style) {
   }
   for (const key of ['showHero', 'showLevels', 'showTalentNames']) $(`#${key}`).checked = resolved[key];
   updateOutputs();
+  updateDependentControls();
   previewStyle();
 }
 
@@ -162,6 +165,24 @@ function updateOutputs() {
   for (const id of ['accentColor', 'borderColor', 'backgroundColor', 'textColor']) $(`output[for="${id}"]`).textContent = $(`#${id}`).value;
   for (const id of ['iconSize', 'borderWidth', 'borderRadius', 'gap']) $(`output[for="${id}"]`).textContent = `${$(`#${id}`).value}px`;
   $('output[for="animationSpeed"]').textContent = `${$('#animationSpeed').value}%`;
+}
+
+function setStyleDirty(dirty) {
+  styleDirty = dirty;
+  const state = $('#style-save-state');
+  state.textContent = t(dirty ? 'unsavedChanges' : 'appearanceSaved');
+  state.classList.toggle('dirty', dirty);
+}
+
+function updateDependentControls() {
+  const borderDisabled = $('#borderStyle').value === 'none';
+  $('#borderWidth').disabled = borderDisabled;
+  $('#borderWidthControl').classList.toggle('control-disabled', borderDisabled);
+  const animationDisabled = $('#entryAnimation').value === 'none';
+  $('#animationSpeed').disabled = animationDisabled;
+  $('#previewEntry').disabled = animationDisabled;
+  $('#animationSpeedControl').classList.toggle('control-disabled', animationDisabled);
+  $('#previewAnimationControl').classList.toggle('control-disabled', animationDisabled);
 }
 
 function previewStyle() {
@@ -193,19 +214,20 @@ async function load() {
   applyLanguage(configState.uiLanguage);
   fillGeneralForm(configState);
   fillStyleForm(configState.overlayStyle);
+  setStyleDirty(false);
   render(status);
 }
 
-$('#style-form').addEventListener('input', () => { updateOutputs(); previewStyle(); });
+$('#style-form').addEventListener('input', () => { updateOutputs(); updateDependentControls(); setStyleDirty(true); previewStyle(); });
 $('#style-form').addEventListener('submit', async event => {
   event.preventDefault();
   const button = event.submitter;
   setBusy(button, true);
-  try { await saveConfig({ ...configState, overlayStyle: readStyleForm() }); }
+  try { await saveConfig({ ...configState, overlayStyle: readStyleForm() }); setStyleDirty(false); }
   catch (error) { showToast(error.message, true); }
   finally { setBusy(button, false); }
 });
-$('#defaults').addEventListener('click', () => { fillStyleForm(defaultStyle); showToast(t('defaultsPreview')); });
+$('#defaults').addEventListener('click', () => { fillStyleForm(defaultStyle); setStyleDirty(true); showToast(t('defaultsPreview')); });
 
 $('#config-form').addEventListener('submit', async event => {
   event.preventDefault();
@@ -238,6 +260,7 @@ $('#regenerate').addEventListener('click', async () => { try { await post('/api/
 $('#reset').addEventListener('click', async () => { try { await post('/api/match/reset'); showToast(t('matchReset')); } catch (error) { showToast(error.message, true); } });
 $('#overlay-preview').addEventListener('load', () => { previewStyle(); fitPreview(); });
 new ResizeObserver(fitPreview).observe($('.preview-stage'));
+window.addEventListener('beforeunload', event => { if (styleDirty) { event.preventDefault(); event.returnValue = ''; } });
 
 load().catch(error => showToast(error.message, true));
 const events = new EventSource('/events');
