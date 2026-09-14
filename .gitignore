@@ -1,0 +1,13 @@
+bin/
+obj/
+.dotnet/
+.tools/
+dist/
+outputs/
+work/
+.vs/
+*.user
+*.suo
+logs/
+data/
+assets/talents/

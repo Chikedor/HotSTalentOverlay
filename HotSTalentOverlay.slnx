@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="vendor/Heroes.StormReplayParser/Heroes.StormReplayParser.csproj" />
+  <Project Path="src/HotSTalentOverlay.Core/HotSTalentOverlay.Core.csproj" />
+  <Project Path="src/HotSTalentOverlay.App/HotSTalentOverlay.App.csproj" />
+  <Project Path="tests/HotSTalentOverlay.Tests/HotSTalentOverlay.Tests.csproj" />
+</Solution>

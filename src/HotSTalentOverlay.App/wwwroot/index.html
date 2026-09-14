@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HotSTalentOverlay</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <main>
+    <header><div><span class="eyebrow">CONTROL LOCAL</span><h1>HotS Talent Overlay</h1></div><span id="health" class="pill">Iniciando…</span></header>
+    <section class="grid status-grid">
+      <article><span>Heroes of the Storm</span><strong id="game">Buscando…</strong><small id="path"></small></article>
+      <article><span>Catálogo local</span><strong id="catalog">Pendiente</strong><small id="catalog-detail"></small></article>
+      <article><span>Detector en directo</span><strong id="watcher">Pendiente</strong><small id="replay-path"></small></article>
+    </section>
+
+    <section class="panel match">
+      <div><span class="eyebrow">PARTIDA ACTUAL</span><h2 id="hero">Esperando una partida</h2><p id="player">Los talentos aparecerán aquí al elegirlos.</p></div>
+      <div id="talents" class="talents"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Configuración</h2>
+      <form id="config-form">
+        <label>BattleTag <input id="battleTag" placeholder="Nombre#1234"></label>
+        <label>Ruta de HotS <input id="hotsPath" placeholder="C:\Program Files (x86)\Heroes of the Storm"></label>
+        <label>Carpeta Accounts <input id="replayPath" placeholder="Se detecta automáticamente"></label>
+        <label>Puerto OBS <input id="obsPort" type="number" min="1024" max="65535"></label>
+        <label>Idioma <select id="locale"><option>esES</option><option>enUS</option><option>esMX</option></select></label>
+        <button type="submit">Guardar</button>
+      </form>
+      <p id="message" role="status"></p>
+    </section>
+
+    <section class="panel actions">
+      <div><span class="eyebrow">OBS BROWSER SOURCE</span><code id="obs-url"></code></div>
+      <div class="buttons"><button id="copy">Copiar URL</button><a href="/overlay.html" target="_blank">Abrir preview</a><button id="demo">Cargar demo</button><button id="regenerate">Regenerar catálogo</button><button id="reset" class="ghost">Resetear partida</button></div>
+    </section>
+    <section id="error" class="error" hidden></section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
+

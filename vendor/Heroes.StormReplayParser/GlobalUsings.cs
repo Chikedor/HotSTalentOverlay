@@ -1,0 +1,16 @@
+﻿global using Heroes.MpqTool;
+global using Heroes.StormReplayParser.Decoders;
+global using Heroes.StormReplayParser.GameEvent;
+global using Heroes.StormReplayParser.MessageEvent;
+global using Heroes.StormReplayParser.MpqFiles;
+global using Heroes.StormReplayParser.Player;
+global using Heroes.StormReplayParser.Pregame;
+global using Heroes.StormReplayParser.Pregame.Player;
+global using Heroes.StormReplayParser.Replay;
+global using Heroes.StormReplayParser.TrackerEvent;
+global using System.Buffers;
+global using System.Buffers.Binary;
+global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Runtime.CompilerServices;
+global using System.Text;
