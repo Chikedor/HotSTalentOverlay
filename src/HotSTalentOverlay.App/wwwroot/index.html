@@ -20,13 +20,10 @@
         </div>
       </div>
       <div class="header-actions">
-        <label class="language-picker">
-          <span data-i18n="language">Idioma</span>
-          <select id="uiLanguage" data-i18n-aria="interfaceLanguage" aria-label="Idioma de la interfaz">
-            <option value="es">ES</option>
-            <option value="en">EN</option>
-          </select>
-        </label>
+        <div class="language-switch" role="group" data-i18n-aria="interfaceLanguage" aria-label="Idioma de la interfaz">
+          <button class="language-button" type="button" data-language="es" aria-label="Español" title="Español"><svg viewBox="0 0 24 16" aria-hidden="true"><path fill="#aa151b" d="M0 0h24v16H0z"/><path fill="#f1bf00" d="M0 4h24v8H0z"/></svg><b>ES</b></button>
+          <button class="language-button" type="button" data-language="en" aria-label="English" title="English"><svg viewBox="0 0 24 16" aria-hidden="true"><path fill="#012169" d="M0 0h24v16H0z"/><path stroke="#fff" stroke-width="3" d="m0 0 24 16M24 0 0 16"/><path stroke="#c8102e" stroke-width="1.5" d="m0 0 24 16M24 0 0 16"/><path stroke="#fff" stroke-width="5" d="M12 0v16M0 8h24"/><path stroke="#c8102e" stroke-width="3" d="M12 0v16M0 8h24"/></svg><b>EN</b></button>
+        </div>
         <span id="health" class="pill" role="status">Iniciando…</span>
       </div>
     </header>
@@ -89,8 +86,8 @@
             <legend data-i18n="motion">Movimiento</legend>
             <div class="control-grid">
               <label><span data-i18n="entryAnimation">Al aparecer</span><select id="entryAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="fade" data-i18n="fade">Fundido</option><option value="slide" data-i18n="slide">Deslizamiento</option><option value="pop" data-i18n="pop">Salto</option><option value="flip" data-i18n="flip">Giro</option></select></label>
-              <label><span data-i18n="idleAnimation">Animación continua</span><select id="idleAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="breathe" data-i18n="breathe">Respiración</option><option value="glow" data-i18n="glow">Brillo</option><option value="float" data-i18n="float">Flotación</option></select></label>
-              <label class="wide-control"><span data-i18n="animationSpeed">Velocidad</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
+              <div class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto sin guardar</span><button id="previewEntry" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewAnimation">Probar aparición</span></button></div>
+              <label class="wide-control"><span data-i18n="animationSpeed">Velocidad de aparición</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
             </div>
           </fieldset>
 

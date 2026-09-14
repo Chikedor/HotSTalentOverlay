@@ -1,14 +1,17 @@
 const tiers = [1, 4, 7, 10, 13, 16, 20];
 const slots = document.querySelector('#slots');
 const hero = document.querySelector('#hero');
+const overlay = document.querySelector('#overlay');
 const fallbackStyle = {
   accentColor: '#b9a8ff', borderColor: '#7869b3', backgroundColor: '#11101c', textColor: '#ffffff',
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
   showHero: true, showLevels: true, showTalentNames: false,
-  entryAnimation: 'slide', idleAnimation: 'none', animationSpeed: 100,
+  entryAnimation: 'slide', animationSpeed: 100,
 };
 let activeStyle = fallbackStyle;
 let initialized = false;
+let currentMatchId = '';
+let transitionTimer;
 
 for (const level of tiers) {
   const slot = document.createElement('div');
@@ -34,17 +37,14 @@ function applyStyle(style) {
   root.setProperty('--border-radius', `${activeStyle.borderRadius}px`);
   root.setProperty('--border-style', activeStyle.borderStyle);
   root.setProperty('--entry-duration', `${0.45 * 100 / activeStyle.animationSpeed}s`);
-  root.setProperty('--idle-duration', `${2.8 * 100 / activeStyle.animationSpeed}s`);
   hero.hidden = !activeStyle.showHero;
   for (const slot of slots.children) {
     slot.querySelector('.level').hidden = !activeStyle.showLevels;
     slot.querySelector('.talent-name').hidden = !activeStyle.showTalentNames;
-    slot.classList.remove('idle-breathe', 'idle-glow', 'idle-float');
-    if (activeStyle.idleAnimation !== 'none') slot.classList.add(`idle-${activeStyle.idleAnimation}`);
   }
 }
 
-function render(state) {
+function renderState(state, suppressEntry = false) {
   applyStyle(state.overlayStyle);
   document.documentElement.lang = state.uiLanguage === 'en' ? 'en' : 'es';
   hero.textContent = state.heroName || '';
@@ -71,7 +71,7 @@ function render(state) {
         icon.append(image);
       }
       slot.classList.remove('entry-fade', 'entry-slide', 'entry-pop', 'entry-flip');
-      if (initialized && nextId && !selectedIds.has(previousId) && activeStyle.entryAnimation !== 'none') {
+      if (initialized && !suppressEntry && nextId && !selectedIds.has(previousId) && activeStyle.entryAnimation !== 'none') {
         void slot.offsetWidth;
         slot.classList.add(`entry-${activeStyle.entryAnimation}`);
       }
@@ -80,8 +80,43 @@ function render(state) {
   initialized = true;
 }
 
+function replayEntryAnimation() {
+  const animation = activeStyle.entryAnimation;
+  if (animation === 'none') return;
+  const chosen = [...slots.children].filter(slot => slot.dataset.talentId);
+  const targets = chosen.length ? chosen : [...slots.children];
+  for (const slot of targets) slot.classList.remove('entry-fade', 'entry-slide', 'entry-pop', 'entry-flip');
+  void slots.offsetWidth;
+  targets.forEach((slot, index) => setTimeout(() => slot.classList.add(`entry-${animation}`), index * 45));
+}
+
+function render(state) {
+  const nextMatchId = state.matchId || '';
+  const isNewMatch = initialized && currentMatchId && nextMatchId && nextMatchId !== currentMatchId;
+  clearTimeout(transitionTimer);
+  if (!isNewMatch) {
+    renderState(state);
+    currentMatchId = nextMatchId;
+    return;
+  }
+
+  overlay.classList.remove('match-arriving');
+  overlay.classList.add('match-leaving');
+  const delay = 325 * 100 / activeStyle.animationSpeed;
+  transitionTimer = setTimeout(() => {
+    renderState(state, true);
+    currentMatchId = nextMatchId;
+    overlay.classList.remove('match-leaving');
+    void overlay.offsetWidth;
+    overlay.classList.add('match-arriving');
+    transitionTimer = setTimeout(() => overlay.classList.remove('match-arriving'), 500 * 100 / activeStyle.animationSpeed);
+  }, delay);
+}
+
 window.addEventListener('message', event => {
-  if (event.origin === location.origin && event.data?.type === 'overlay-style-preview') applyStyle(event.data.style);
+  if (event.origin !== location.origin) return;
+  if (event.data?.type === 'overlay-style-preview') applyStyle(event.data.style);
+  if (event.data?.type === 'overlay-entry-preview') replayEntryAnimation();
 });
 
 fetch('/api/status').then(response => response.json()).then(render);

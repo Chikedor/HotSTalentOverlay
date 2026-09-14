@@ -49,7 +49,7 @@ public sealed class CoreTests : IDisposable
         AppConfig expected = new()
         {
             BattleTag = "Chike#1234", ObsPort = 4874, Locale = "esES", UiLanguage = "en",
-            OverlayStyle = new OverlayStyleConfig { AccentColor = "#ff00aa", BorderStyle = "double", IdleAnimation = "breathe", ShowTalentNames = true },
+            OverlayStyle = new OverlayStyleConfig { AccentColor = "#ff00aa", BorderStyle = "double", EntryAnimation = "pop", ShowTalentNames = true },
         };
         await store.SaveAsync(expected, cancellationToken);
         Assert.Equal(expected, new ConfigStore(paths).Current);

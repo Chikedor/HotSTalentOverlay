@@ -72,8 +72,7 @@ public sealed class ConfigStore
             style.IconSize is < 40 or > 160 || style.Gap is < 0 or > 40 || style.AnimationSpeed is < 50 or > 200)
             throw new ArgumentOutOfRangeException(nameof(config), "La configuración visual está fuera del rango permitido.");
         if (style.BorderStyle is not ("solid" or "double" or "dashed" or "none") ||
-            style.EntryAnimation is not ("none" or "fade" or "slide" or "pop" or "flip") ||
-            style.IdleAnimation is not ("none" or "breathe" or "glow" or "float"))
+            style.EntryAnimation is not ("none" or "fade" or "slide" or "pop" or "flip"))
             throw new ArgumentException("La animación o el estilo de borde no es válido.", nameof(config));
     }
 }

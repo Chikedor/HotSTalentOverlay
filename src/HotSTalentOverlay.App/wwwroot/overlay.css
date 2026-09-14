@@ -10,7 +10,6 @@
   --border-radius: 10px;
   --border-style: solid;
   --entry-duration: .45s;
-  --idle-duration: 2.8s;
 }
 
 * { box-sizing: border-box; }
@@ -41,14 +40,12 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background:
 .entry-slide { animation: talent-slide var(--entry-duration) cubic-bezier(.16,1,.3,1) both; }
 .entry-pop { animation: talent-pop var(--entry-duration) cubic-bezier(.18,1.55,.4,1) both; }
 .entry-flip { animation: talent-flip var(--entry-duration) cubic-bezier(.2,.8,.2,1) both; }
-.idle-breathe .icon.chosen { animation: talent-breathe var(--idle-duration) ease-in-out infinite; }
-.idle-glow .icon.chosen { animation: talent-glow var(--idle-duration) ease-in-out infinite; }
-.idle-float .icon.chosen { animation: talent-float var(--idle-duration) ease-in-out infinite; }
+#overlay.match-leaving { animation: match-leave calc(var(--entry-duration) * .72) cubic-bezier(.4,0,1,1) both; }
+#overlay.match-arriving { animation: match-arrive var(--entry-duration) cubic-bezier(.16,1,.3,1) both; }
 
 @keyframes talent-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes talent-slide { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes talent-pop { 0% { opacity: 0; transform: scale(.55); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes talent-flip { from { opacity: 0; transform: perspective(320px) rotateY(-85deg); } to { opacity: 1; transform: perspective(320px) rotateY(0); } }
-@keyframes talent-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
-@keyframes talent-glow { 0%, 100% { box-shadow: inset 0 0 0 1px #ffffff22, 0 0 7px color-mix(in srgb, var(--accent-color) 30%, transparent); } 50% { box-shadow: inset 0 0 0 1px #ffffff33, 0 0 24px var(--accent-color); } }
-@keyframes talent-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes match-leave { to { opacity: 0; transform: translateY(-12px) scale(.97); filter: blur(3px) drop-shadow(0 3px 8px #000c); } }
+@keyframes match-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }

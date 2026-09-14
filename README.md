@@ -51,11 +51,12 @@ Open the dashboard and use **Appearance** to tailor the overlay without editing 
 - Choose the accent, empty-border, background, and text colors.
 - Adjust the icon size, spacing, border width, radius, and style.
 - Select how a new talent appears: fade, slide, pop, flip, or no animation.
-- Add a subtle idle effect: breathing, glow, floating, or none.
+- Replay the selected appearance animation directly in the preview before saving.
+- Smoothly clears the previous talents when a new match is detected.
 - Show or hide the hero name, talent levels, and localized talent names.
 - Preview every change instantly, then save it for OBS and future sessions.
 
-The **Interface language** selector changes the dashboard between English and Spanish. **Talent language** controls the game data extracted from HotS and is intentionally configured separately.
+Use the Spanish and British flag buttons to change the dashboard language. **Talent language** controls the game data extracted from HotS and is intentionally configured separately.
 
 ## Player identification
 
@@ -165,11 +166,12 @@ Abre el panel y usa **Apariencia** para adaptar el overlay sin editar CSS:
 - Elige los colores de acento, borde vacío, fondo y texto.
 - Ajusta el tamaño y la separación de los iconos, además del grosor, radio y estilo del borde.
 - Selecciona cómo aparece un nuevo talento: fundido, deslizamiento, pop, giro o sin animación.
-- Añade un efecto sutil en reposo: respiración, brillo, flotación o ninguno.
+- Reproduce la animación de aparición elegida directamente en la vista previa antes de guardar.
+- Vacía suavemente los talentos anteriores cuando detecta una partida nueva.
 - Muestra u oculta el nombre del héroe, los niveles y los nombres localizados de los talentos.
 - Previsualiza cada cambio al instante y guárdalo para OBS y las próximas sesiones.
 
-El selector **Idioma de interfaz** cambia el panel entre español e inglés. **Idioma de talentos** controla los datos del juego extraídos de HotS y se configura por separado de forma intencionada.
+Usa los botones con las banderas española y británica para cambiar el idioma del panel. **Idioma de talentos** controla los datos del juego extraídos de HotS y se configura por separado de forma intencionada.
 
 ## Identificación del jugador
 

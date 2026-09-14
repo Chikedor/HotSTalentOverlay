@@ -40,8 +40,12 @@ h2 { margin-bottom: 0; font-size: clamp(19px, 2vw, 25px); letter-spacing: -.02em
 .brand p, .section-description, .match-panel p { margin: 7px 0 0; color: var(--muted); }
 .eyebrow { display: block; margin-bottom: 7px; color: #aaa0dd; font-size: 11px; font-weight: 800; letter-spacing: .14em; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
-.language-picker { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
-.language-picker select { width: auto; padding: 8px 30px 8px 10px; }
+.language-switch { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: #0d0e18; }
+.language-button { display: inline-flex; min-width: 49px; min-height: 34px; align-items: center; justify-content: center; gap: 5px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #aaa9b8; cursor: pointer; }
+.language-button svg { width: 22px; height: 15px; border-radius: 2px; box-shadow: 0 0 0 1px #ffffff22; }
+.language-button b { font-size: 11px; }
+.language-button:hover { background: #ffffff0b; color: white; }
+.language-button.active { border-color: #9f8aff66; background: #7458d844; color: white; box-shadow: inset 0 0 0 1px #ffffff0b; }
 .pill { white-space: nowrap; padding: 9px 13px; border: 1px solid #69677e; border-radius: 999px; background: #191a28cc; color: #d7d5e4; font-size: 13px; font-weight: 700; }
 .pill.ok { border-color: #379b73; background: #17362c; color: #91efc7; }
 
@@ -80,6 +84,8 @@ input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 7px; }
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 .range-row output { color: #d8d5e8; text-align: right; font: 12px ui-monospace, monospace; }
 .wide-control { grid-column: 1 / -1; }
+.preview-animation-control { display: grid; align-content: end; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 650; }
+.preview-animation-control .button { gap: 7px; }
 .switch-grid { display: grid; gap: 10px; }
 .switch { position: relative; display: flex; align-items: center; gap: 10px; min-height: 34px; cursor: pointer; }
 .switch input[type="checkbox"] { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); opacity: 0; pointer-events: none; }
