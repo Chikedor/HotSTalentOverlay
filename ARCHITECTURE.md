@@ -12,6 +12,7 @@ Accounts/**/Saves/Rejoin/*.StormSave
        └─ Heroes.StormReplayParser 2.2.1
             └─ jugador local ──> HeroTalent.TalentNameId ──> catálogo
                  └─ RuntimeState ──> SSE ──> overlay.html ──> OBS
+                                      └─ preferencias visuales ──> variables CSS
 ```
 
 ## Decisiones
@@ -24,6 +25,7 @@ Accounts/**/Saves/Rejoin/*.StormSave
 - Antes de parsear se espera estabilidad de tamaño y se copia con `FileShare.ReadWrite|Delete`. Nunca se abre HotS para escritura.
 - El nuevo catálogo se genera en staging. Sólo sustituye datos/iconos tras validar que todos los PNG referenciados existen; ante fallo se restaura el anterior.
 - La versión se obtiene de `.build.info`; si difiere de `CatalogDocument.Build`, se regenera automáticamente.
+- El idioma de la interfaz y las preferencias visuales se guardan en `config.json`, se validan en el backend y se propagan por SSE. La vista previa del panel usa el mismo overlay que OBS y aplica los cambios sin guardar mediante `postMessage`.
 
 ## Estado del ecosistema (verificado el 14-09-2026)
 

@@ -9,6 +9,8 @@ A private, local OBS overlay for *Heroes of the Storm*. It watches the game's `S
 - Extracts hero, talent, and icon data directly from the local CASC game files.
 - Regenerates the catalog when the game build changes.
 - Updates OBS live through Server-Sent Events—no browser polling or manual refresh.
+- Provides a complete dashboard in English and Spanish.
+- Lets you personalize colors, borders, spacing, labels, and animations with a live preview.
 - Never uploads your BattleTag, matches, or talent choices.
 
 ## Quick start
@@ -41,6 +43,19 @@ The script downloads a repository-local .NET SDK and `HeroesDataParser`, restore
 4. Optionally enable **Shutdown source when not visible**.
 
 Use **Load demo** on the dashboard to test the transparent overlay without starting a match.
+
+## Customize the overlay
+
+Open the dashboard and use **Appearance** to tailor the overlay without editing CSS:
+
+- Choose the accent, empty-border, background, and text colors.
+- Adjust the icon size, spacing, border width, radius, and style.
+- Select how a new talent appears: fade, slide, pop, flip, or no animation.
+- Add a subtle idle effect: breathing, glow, floating, or none.
+- Show or hide the hero name, talent levels, and localized talent names.
+- Preview every change instantly, then save it for OBS and future sessions.
+
+The **Interface language** selector changes the dashboard between English and Spanish. **Talent language** controls the game data extracted from HotS and is intentionally configured separately.
 
 ## Player identification
 
@@ -108,6 +123,8 @@ Overlay privado y local para OBS y *Heroes of the Storm*. Vigila los archivos `S
 - Extrae héroes, talentos e iconos directamente de los archivos CASC locales.
 - Regenera el catálogo cuando cambia la build del juego.
 - Actualiza OBS mediante Server-Sent Events, sin polling ni recargas manuales.
+- Ofrece un panel completo en español e inglés.
+- Permite personalizar colores, bordes, espaciado, textos y animaciones con vista previa en directo.
 - Nunca sube tu BattleTag, partidas o elecciones de talentos.
 
 ## Inicio rápido
@@ -140,6 +157,19 @@ El script descarga una copia local de .NET y `HeroesDataParser`, restaura las de
 4. Opcionalmente, activa **Cerrar fuente cuando no sea visible**.
 
 Pulsa **Cargar demo** en el panel para probar el overlay transparente sin iniciar una partida.
+
+## Personalizar el overlay
+
+Abre el panel y usa **Apariencia** para adaptar el overlay sin editar CSS:
+
+- Elige los colores de acento, borde vacío, fondo y texto.
+- Ajusta el tamaño y la separación de los iconos, además del grosor, radio y estilo del borde.
+- Selecciona cómo aparece un nuevo talento: fundido, deslizamiento, pop, giro o sin animación.
+- Añade un efecto sutil en reposo: respiración, brillo, flotación o ninguno.
+- Muestra u oculta el nombre del héroe, los niveles y los nombres localizados de los talentos.
+- Previsualiza cada cambio al instante y guárdalo para OBS y las próximas sesiones.
+
+El selector **Idioma de interfaz** cambia el panel entre español e inglés. **Idioma de talentos** controla los datos del juego extraídos de HotS y se configura por separado de forma intencionada.
 
 ## Identificación del jugador
 

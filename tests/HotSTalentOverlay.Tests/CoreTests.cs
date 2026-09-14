@@ -46,10 +46,35 @@ public sealed class CoreTests : IDisposable
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         AppPaths paths = new(Path.Combine(_root, "state"));
         ConfigStore store = new(paths);
-        AppConfig expected = new() { BattleTag = "Chike#1234", ObsPort = 4874, Locale = "esES" };
+        AppConfig expected = new()
+        {
+            BattleTag = "Chike#1234", ObsPort = 4874, Locale = "esES", UiLanguage = "en",
+            OverlayStyle = new OverlayStyleConfig { AccentColor = "#ff00aa", BorderStyle = "double", IdleAnimation = "breathe", ShowTalentNames = true },
+        };
         await store.SaveAsync(expected, cancellationToken);
         Assert.Equal(expected, new ConfigStore(paths).Current);
         Assert.NotNull(JsonDocument.Parse(await File.ReadAllTextAsync(paths.ConfigFile, cancellationToken)));
+    }
+
+    [Fact]
+    public async Task ConfigStoreRejectsInvalidOverlayStyle()
+    {
+        AppPaths paths = new(Path.Combine(_root, "state"));
+        ConfigStore store = new(paths);
+        AppConfig invalid = new() { OverlayStyle = new OverlayStyleConfig { AccentColor = "purple" } };
+        await Assert.ThrowsAsync<ArgumentException>(() => store.SaveAsync(invalid, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task ConfigStoreAddsDefaultsToLegacyConfig()
+    {
+        AppPaths paths = new(Path.Combine(_root, "legacy-state"));
+        await File.WriteAllTextAsync(paths.ConfigFile, """{"obsPort":3874,"locale":"enUS"}""", TestContext.Current.CancellationToken);
+
+        AppConfig config = new ConfigStore(paths).Current;
+
+        Assert.Equal("es", config.UiLanguage);
+        Assert.Equal(new OverlayStyleConfig(), config.OverlayStyle);
     }
 
     [Fact]

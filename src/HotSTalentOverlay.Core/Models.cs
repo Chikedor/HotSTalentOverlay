@@ -7,6 +7,27 @@ public sealed record AppConfig
     public string ReplayPath { get; init; } = string.Empty;
     public int ObsPort { get; init; } = 3874;
     public string Locale { get; init; } = "esES";
+    public string UiLanguage { get; init; } = "es";
+    public OverlayStyleConfig OverlayStyle { get; init; } = new();
+}
+
+public sealed record OverlayStyleConfig
+{
+    public string AccentColor { get; init; } = "#b9a8ff";
+    public string BorderColor { get; init; } = "#7869b3";
+    public string BackgroundColor { get; init; } = "#11101c";
+    public string TextColor { get; init; } = "#ffffff";
+    public int BorderWidth { get; init; } = 2;
+    public int BorderRadius { get; init; } = 10;
+    public string BorderStyle { get; init; } = "solid";
+    public int IconSize { get; init; } = 84;
+    public int Gap { get; init; } = 10;
+    public bool ShowHero { get; init; } = true;
+    public bool ShowLevels { get; init; } = true;
+    public bool ShowTalentNames { get; init; }
+    public string EntryAnimation { get; init; } = "slide";
+    public string IdleAnimation { get; init; } = "none";
+    public int AnimationSpeed { get; init; } = 100;
 }
 
 public sealed record TalentCatalogEntry(
@@ -58,6 +79,8 @@ public sealed record AppStatus
     public bool WatcherRunning { get; init; }
     public string ReplayPath { get; init; } = string.Empty;
     public string BattleTag { get; init; } = string.Empty;
+    public string UiLanguage { get; init; } = "es";
+    public OverlayStyleConfig OverlayStyle { get; init; } = new();
     public string MatchId { get; init; } = string.Empty;
     public string Player { get; init; } = string.Empty;
     public string HeroUnitId { get; init; } = string.Empty;
@@ -66,4 +89,3 @@ public sealed record AppStatus
     public string LastError { get; init; } = string.Empty;
     public DateTimeOffset UpdatedAt { get; init; } = DateTimeOffset.UtcNow;
 }
-

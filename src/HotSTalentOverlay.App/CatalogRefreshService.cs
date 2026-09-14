@@ -39,6 +39,8 @@ public sealed class CatalogRefreshService : BackgroundService
             GameVersion = game?.Version ?? string.Empty,
             GameBuild = game?.Build ?? 0,
             BattleTag = _config.Current.BattleTag,
+            UiLanguage = _config.Current.UiLanguage,
+            OverlayStyle = _config.Current.OverlayStyle,
             ReplayPath = EffectiveReplayPath(_config.Current),
         });
 

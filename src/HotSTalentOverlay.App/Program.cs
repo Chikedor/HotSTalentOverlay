@@ -38,7 +38,12 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/assets",
 });
 
-app.MapGet("/api/status", (RuntimeState state, ConfigStore config) => Results.Ok(state.Snapshot with { BattleTag = config.Current.BattleTag }));
+app.MapGet("/api/status", (RuntimeState state, ConfigStore config) => Results.Ok(state.Snapshot with
+{
+    BattleTag = config.Current.BattleTag,
+    UiLanguage = config.Current.UiLanguage,
+    OverlayStyle = config.Current.OverlayStyle,
+}));
 app.MapGet("/api/config", (ConfigStore config) => Results.Ok(config.Current));
 app.MapPost("/api/config", async (AppConfig config, ConfigStore store, RuntimeState state, LiveWatcherService watcher, CatalogRefreshService refresh, GameInstallationDetector detector, CancellationToken ct) =>
 {
@@ -49,7 +54,8 @@ app.MapPost("/api/config", async (AppConfig config, ConfigStore store, RuntimeSt
         DetectedGame? game = detector.Detect(config.HotsPath);
         state.Update(s => s with
         {
-            BattleTag = config.BattleTag, ReplayPath = CatalogRefreshService.EffectiveReplayPath(config),
+            BattleTag = config.BattleTag, UiLanguage = config.UiLanguage, OverlayStyle = config.OverlayStyle,
+            ReplayPath = CatalogRefreshService.EffectiveReplayPath(config),
             HotsDetected = game is not null, HotsPath = game?.Path ?? config.HotsPath,
             GameVersion = game?.Version ?? string.Empty, GameBuild = game?.Build ?? 0, LastError = string.Empty,
         });

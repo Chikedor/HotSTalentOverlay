@@ -12,7 +12,10 @@ $env:DOTNET_CLI_HOME = $env:TEMP
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 
 if (Test-Path $publish) { Remove-Item -LiteralPath $publish -Recurse -Force }
-& $sdk publish (Join-Path $root 'src\HotSTalentOverlay.App\HotSTalentOverlay.App.csproj') --configuration Release --runtime win-x64 --self-contained true --output $publish --source 'https://api.nuget.org/v3/index.json' --disable-build-servers -m:1
+& $sdk restore (Join-Path $root 'src\HotSTalentOverlay.App\HotSTalentOverlay.App.csproj') --runtime win-x64 --source 'https://api.nuget.org/v3/index.json' -p:NuGetAudit=false --disable-build-servers -m:1
+if ($LASTEXITCODE -ne 0) { throw "dotnet restore falló con el código $LASTEXITCODE." }
+& $sdk publish (Join-Path $root 'src\HotSTalentOverlay.App\HotSTalentOverlay.App.csproj') --configuration Release --runtime win-x64 --self-contained true --output $publish --no-restore -p:NuGetAudit=false --disable-build-servers -m:1
+if ($LASTEXITCODE -ne 0) { throw "dotnet publish falló con el código $LASTEXITCODE." }
 
 $helperArchive = Join-Path $temp 'HeroesDataParser.5.0.4-scd-win-x64.zip'
 $helperDirectory = Join-Path $publish 'tools'

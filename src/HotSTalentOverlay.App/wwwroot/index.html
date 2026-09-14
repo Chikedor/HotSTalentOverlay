@@ -3,43 +3,141 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>HotSTalentOverlay</title>
+  <meta name="color-scheme" content="dark">
+  <title>HotS Talent Overlay</title>
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
-  <main>
-    <header><div><span class="eyebrow">CONTROL LOCAL</span><h1>HotS Talent Overlay</h1></div><span id="health" class="pill">Iniciando…</span></header>
-    <section class="grid status-grid">
-      <article><span>Heroes of the Storm</span><strong id="game">Buscando…</strong><small id="path"></small></article>
-      <article><span>Catálogo local</span><strong id="catalog">Pendiente</strong><small id="catalog-detail"></small></article>
-      <article><span>Detector en directo</span><strong id="watcher">Pendiente</strong><small id="replay-path"></small></article>
+  <a class="skip-link" href="#content" data-i18n="skip">Saltar al contenido</a>
+  <main id="content" class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">H</div>
+        <div>
+          <span class="eyebrow" data-i18n="localControl">CONTROL LOCAL</span>
+          <h1>HotS Talent Overlay</h1>
+          <p data-i18n="tagline">Tus talentos en OBS, automáticamente y sin salir de tu PC.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <label class="language-picker">
+          <span data-i18n="language">Idioma</span>
+          <select id="uiLanguage" data-i18n-aria="interfaceLanguage" aria-label="Idioma de la interfaz">
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+          </select>
+        </label>
+        <span id="health" class="pill" role="status">Iniciando…</span>
+      </div>
+    </header>
+
+    <section class="status-grid" data-i18n-aria="status" aria-label="Estado">
+      <article class="status-card">
+        <span class="status-icon" aria-hidden="true">◆</span>
+        <div><span class="eyebrow">Heroes of the Storm</span><strong id="game">Buscando…</strong><small id="path"></small></div>
+      </article>
+      <article class="status-card">
+        <span class="status-icon" aria-hidden="true">◈</span>
+        <div><span class="eyebrow" data-i18n="localCatalog">CATÁLOGO LOCAL</span><strong id="catalog">Pendiente</strong><small id="catalog-detail"></small></div>
+      </article>
+      <article class="status-card">
+        <span class="status-icon" aria-hidden="true">●</span>
+        <div><span class="eyebrow" data-i18n="liveDetector">DETECTOR EN DIRECTO</span><strong id="watcher">Pendiente</strong><small id="replay-path"></small></div>
+      </article>
     </section>
 
-    <section class="panel match">
-      <div><span class="eyebrow">PARTIDA ACTUAL</span><h2 id="hero">Esperando una partida</h2><p id="player">Los talentos aparecerán aquí al elegirlos.</p></div>
-      <div id="talents" class="talents"></div>
+    <section class="panel match-panel">
+      <div class="section-copy">
+        <span class="eyebrow" data-i18n="currentMatch">PARTIDA ACTUAL</span>
+        <h2 id="hero">Esperando una partida</h2>
+        <p id="player">Los talentos aparecerán aquí al elegirlos.</p>
+      </div>
+      <div id="talents" class="talents" aria-live="polite"></div>
     </section>
 
-    <section class="panel">
-      <h2>Configuración</h2>
-      <form id="config-form">
-        <label>BattleTag <input id="battleTag" placeholder="Nombre#1234"></label>
-        <label>Ruta de HotS <input id="hotsPath" placeholder="C:\Program Files (x86)\Heroes of the Storm"></label>
-        <label>Carpeta Accounts <input id="replayPath" placeholder="Se detecta automáticamente"></label>
-        <label>Puerto OBS <input id="obsPort" type="number" min="1024" max="65535"></label>
-        <label>Idioma <select id="locale"><option>esES</option><option>enUS</option><option>esMX</option></select></label>
-        <button type="submit">Guardar</button>
+    <div class="editor-grid">
+      <section class="panel customization-panel">
+        <div class="section-heading">
+          <div><span class="eyebrow" data-i18n="appearance">APARIENCIA</span><h2 data-i18n="customizeOverlay">Personaliza tus talentos</h2></div>
+          <button id="defaults" class="button secondary compact" type="button" data-i18n="restoreDefaults">Restaurar</button>
+        </div>
+        <p class="section-description" data-i18n="appearanceHelp">Los cambios se reflejan en la previsualización y en OBS al guardar.</p>
+
+        <form id="style-form">
+          <fieldset>
+            <legend data-i18n="colors">Colores</legend>
+            <div class="color-grid">
+              <label class="color-field"><span data-i18n="accent">Acento</span><span><input id="accentColor" type="color"><output for="accentColor"></output></span></label>
+              <label class="color-field"><span data-i18n="borderColor">Borde vacío</span><span><input id="borderColor" type="color"><output for="borderColor"></output></span></label>
+              <label class="color-field"><span data-i18n="backgroundColor">Fondo</span><span><input id="backgroundColor" type="color"><output for="backgroundColor"></output></span></label>
+              <label class="color-field"><span data-i18n="textColor">Texto</span><span><input id="textColor" type="color"><output for="textColor"></output></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="shapeSpacing">Forma y espaciado</legend>
+            <div class="control-grid">
+              <label><span data-i18n="borderStyle">Estilo del borde</span><select id="borderStyle"><option value="solid" data-i18n="solid">Sólido</option><option value="double" data-i18n="double">Doble</option><option value="dashed" data-i18n="dashed">Discontinuo</option><option value="none" data-i18n="none">Ninguno</option></select></label>
+              <label><span data-i18n="iconSize">Tamaño del icono</span><span class="range-row"><input id="iconSize" type="range" min="40" max="160" step="2"><output for="iconSize"></output></span></label>
+              <label><span data-i18n="borderWidth">Grosor del borde</span><span class="range-row"><input id="borderWidth" type="range" min="0" max="8"><output for="borderWidth"></output></span></label>
+              <label><span data-i18n="rounding">Redondeado</span><span class="range-row"><input id="borderRadius" type="range" min="0" max="32" step="2"><output for="borderRadius"></output></span></label>
+              <label><span data-i18n="spacing">Separación</span><span class="range-row"><input id="gap" type="range" min="0" max="40" step="2"><output for="gap"></output></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="motion">Movimiento</legend>
+            <div class="control-grid">
+              <label><span data-i18n="entryAnimation">Al aparecer</span><select id="entryAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="fade" data-i18n="fade">Fundido</option><option value="slide" data-i18n="slide">Deslizamiento</option><option value="pop" data-i18n="pop">Salto</option><option value="flip" data-i18n="flip">Giro</option></select></label>
+              <label><span data-i18n="idleAnimation">Animación continua</span><select id="idleAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="breathe" data-i18n="breathe">Respiración</option><option value="glow" data-i18n="glow">Brillo</option><option value="float" data-i18n="float">Flotación</option></select></label>
+              <label class="wide-control"><span data-i18n="animationSpeed">Velocidad</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="visibleInfo">Información visible</legend>
+            <div class="switch-grid">
+              <label class="switch"><input id="showHero" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showHero">Nombre del héroe</b></label>
+              <label class="switch"><input id="showLevels" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showLevels">Niveles</b></label>
+              <label class="switch"><input id="showTalentNames" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showTalentNames">Nombres de talentos</b></label>
+            </div>
+          </fieldset>
+
+          <button class="button primary save-style" type="submit" data-i18n="saveAppearance">Guardar apariencia</button>
+        </form>
+      </section>
+
+      <aside class="preview-column">
+        <section class="panel preview-panel">
+          <div class="section-heading"><div><span class="eyebrow" data-i18n="livePreview">PREVIEW EN DIRECTO</span><h2 data-i18n="obsResult">Así se verá en OBS</h2></div><span class="live-dot"><i></i><span data-i18n="live">En vivo</span></span></div>
+          <div class="preview-stage"><iframe id="overlay-preview" src="/overlay.html?preview=1" data-i18n-title="overlayPreview" title="Preview del overlay"></iframe></div>
+          <button id="demo" class="button secondary full" type="button" data-i18n="loadDemo">Cargar demo</button>
+        </section>
+
+        <section class="panel obs-panel">
+          <span class="eyebrow">OBS BROWSER SOURCE</span>
+          <div class="url-row"><code id="obs-url"></code><button id="copy" class="icon-button" type="button" data-i18n-aria="copyUrl" aria-label="Copiar URL">⧉</button></div>
+          <div class="button-row"><a class="button secondary" href="/overlay.html" target="_blank" rel="noopener" data-i18n="openPreview">Abrir overlay</a><button id="reset" class="button quiet" type="button" data-i18n="resetMatch">Resetear partida</button></div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="panel settings-panel">
+      <div class="section-heading"><div><span class="eyebrow" data-i18n="advanced">AVANZADO</span><h2 data-i18n="connectionSettings">Juego y conexión</h2></div><button id="regenerate" class="button quiet compact" type="button" data-i18n="regenerate">Regenerar catálogo</button></div>
+      <form id="config-form" class="settings-form">
+        <label><span>BattleTag</span><input id="battleTag" data-i18n-placeholder="battleTagPlaceholder" placeholder="Nombre#1234"></label>
+        <label class="wide"><span data-i18n="hotsPath">Ruta de HotS</span><input id="hotsPath" placeholder="C:\Program Files (x86)\Heroes of the Storm"></label>
+        <label class="wide"><span data-i18n="accountsFolder">Carpeta Accounts</span><input id="replayPath" data-i18n-placeholder="autoDetect" placeholder="Se detecta automáticamente"></label>
+        <label><span data-i18n="obsPort">Puerto OBS</span><input id="obsPort" type="number" min="1024" max="65535"></label>
+        <label><span data-i18n="gameDataLanguage">Idioma de talentos</span><select id="locale"><option value="esES">Español (ES)</option><option value="enUS">English (US)</option><option value="esMX">Español (MX)</option></select></label>
+        <button class="button primary" type="submit" data-i18n="saveSettings">Guardar configuración</button>
       </form>
-      <p id="message" role="status"></p>
     </section>
 
-    <section class="panel actions">
-      <div><span class="eyebrow">OBS BROWSER SOURCE</span><code id="obs-url"></code></div>
-      <div class="buttons"><button id="copy">Copiar URL</button><a href="/overlay.html" target="_blank">Abrir preview</a><button id="demo">Cargar demo</button><button id="regenerate">Regenerar catálogo</button><button id="reset" class="ghost">Resetear partida</button></div>
-    </section>
-    <section id="error" class="error" hidden></section>
+    <div id="message" class="toast" role="status" aria-live="polite" hidden></div>
+    <section id="error" class="error" role="alert" hidden></section>
+    <footer><span data-i18n="privacyFooter">100 % local · Sin telemetría · Tus partidas no salen de este equipo</span></footer>
   </main>
   <script src="app.js"></script>
 </body>
 </html>
-
