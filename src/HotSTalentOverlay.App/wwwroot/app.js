@@ -6,17 +6,24 @@ const defaultStyle = {
   showHero: true, showLevels: true, showTalentNames: false,
   entryAnimation: 'slide', animationSpeed: 100,
 };
+const presets = {
+  classic: { ...defaultStyle },
+  clean: { ...defaultStyle, accentColor: '#ffffff', borderColor: '#ffffff', backgroundColor: '#090a10', borderWidth: 1, borderRadius: 6, borderStyle: 'solid', gap: 8, entryAnimation: 'fade' },
+  neon: { ...defaultStyle, accentColor: '#00f5c4', borderColor: '#7b61ff', backgroundColor: '#080b18', borderWidth: 2, borderRadius: 12, gap: 10, entryAnimation: 'pop' },
+  compact: { ...defaultStyle, iconSize: 58, gap: 5, borderWidth: 1, borderRadius: 7, showHero: false, showTalentNames: false, entryAnimation: 'slide' },
+};
 const i18n = {
   es: {
     skip: 'Saltar al contenido', localControl: 'CONTROL LOCAL', tagline: 'Tus talentos en OBS, automáticamente y sin salir de tu PC.', language: 'Idioma', interfaceLanguage: 'Idioma de la interfaz', status: 'Estado', overlayPreview: 'Preview del overlay',
     localCatalog: 'CATÁLOGO LOCAL', liveDetector: 'DETECTOR EN DIRECTO', currentMatch: 'PARTIDA ACTUAL', appearance: 'APARIENCIA',
-    customizeOverlay: 'Personaliza tus talentos', restoreDefaults: 'Restaurar', appearanceHelp: 'Prueba los cambios al instante y guárdalos cuando estés satisfecho.',
+    customizeOverlay: 'Personaliza tus talentos', restoreDefaults: 'Restaurar', appearanceHelp: 'Elige un estilo y ajústalo. Los cambios se guardan automáticamente.',
+    chooseStyle: 'Elige un estilo', presetClassic: 'Clásico', presetClean: 'Limpio', presetNeon: 'Neón', presetCompact: 'Compacto', essentials: 'Lo esencial', moreOptions: 'Más opciones', moreOptionsHelp: 'Bordes, fondo, espaciado y velocidad',
     colors: 'Colores', accent: 'Acento', borderColor: 'Color de huecos vacíos', backgroundColor: 'Fondo del hueco', textColor: 'Texto', shapeSpacing: 'Forma y espaciado',
     borderStyle: 'Estilo del borde', solid: 'Sólido', double: 'Doble', dashed: 'Discontinuo', none: 'Ninguno', iconSize: 'Tamaño del icono',
     borderWidth: 'Grosor del borde', rounding: 'Redondeado', spacing: 'Separación', motion: 'Movimiento', entryAnimation: 'Al aparecer',
     fade: 'Fundido', slide: 'Deslizamiento', pop: 'Salto', flip: 'Giro', previewAnimation: 'Probar aparición', previewAnimationHelp: 'Comprueba el efecto sin guardar',
     animationSpeed: 'Velocidad de aparición', visibleInfo: 'Información visible', showHero: 'Nombre del héroe', showLevels: 'Niveles', showTalentNames: 'Nombres de talentos',
-    saveAppearance: 'Guardar apariencia', appearanceSaved: 'Apariencia guardada', unsavedChanges: 'Cambios sin guardar', livePreview: 'PREVIEW EN DIRECTO', obsResult: 'Así se verá en OBS', live: 'En vivo', loadDemo: 'Usar partida de demostración', demoHelp: 'Sustituye temporalmente la partida mostrada también en OBS.',
+    saveAppearance: 'Guardar apariencia', appearanceSaved: 'Guardado automáticamente ✓', unsavedChanges: 'Guardando…', saveFailed: 'No se pudo guardar', livePreview: 'PREVIEW EN DIRECTO', obsResult: 'Así se verá en OBS', live: 'En vivo', previewMode: 'Estado de la preview', withTalents: 'Con talentos', withoutTalents: 'Sin talentos', loadDemo: 'Usar partida de demostración', demoHelp: 'Sustituye temporalmente la partida mostrada también en OBS.',
     copyUrl: 'Copiar URL', openPreview: 'Abrir overlay', resetMatch: 'Vaciar partida detectada', advanced: 'AVANZADO', connectionSettings: 'Juego y conexión',
     regenerate: 'Regenerar catálogo', battleTagPlaceholder: 'Nombre#1234', hotsPath: 'Ruta de HotS', accountsFolder: 'Carpeta Accounts', autoDetect: 'Se detecta automáticamente',
     obsPort: 'Puerto OBS', gameDataLanguage: 'Idioma de talentos', saveSettings: 'Guardar configuración', privacyFooter: '100 % local · Sin telemetría · Tus partidas no salen de este equipo',
@@ -29,13 +36,14 @@ const i18n = {
   en: {
     skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview',
     localCatalog: 'LOCAL CATALOG', liveDetector: 'LIVE DETECTOR', currentMatch: 'CURRENT MATCH', appearance: 'APPEARANCE',
-    customizeOverlay: 'Customize your talents', restoreDefaults: 'Restore', appearanceHelp: 'Try changes instantly and save them when you are happy.',
+    customizeOverlay: 'Customize your talents', restoreDefaults: 'Restore', appearanceHelp: 'Choose a style and adjust it. Changes save automatically.',
+    chooseStyle: 'Choose a style', presetClassic: 'Classic', presetClean: 'Clean', presetNeon: 'Neon', presetCompact: 'Compact', essentials: 'Essentials', moreOptions: 'More options', moreOptionsHelp: 'Borders, background, spacing and speed',
     colors: 'Colors', accent: 'Accent', borderColor: 'Empty slot color', backgroundColor: 'Slot background', textColor: 'Text', shapeSpacing: 'Shape and spacing',
     borderStyle: 'Border style', solid: 'Solid', double: 'Double', dashed: 'Dashed', none: 'None', iconSize: 'Icon size', borderWidth: 'Border width',
     rounding: 'Corner radius', spacing: 'Spacing', motion: 'Motion', entryAnimation: 'On appearance', fade: 'Fade', slide: 'Slide',
     pop: 'Pop', flip: 'Flip', previewAnimation: 'Preview appearance', previewAnimationHelp: 'Check the effect without saving', animationSpeed: 'Appearance speed', visibleInfo: 'Visible information',
-    showHero: 'Hero name', showLevels: 'Levels', showTalentNames: 'Talent names', saveAppearance: 'Save appearance', appearanceSaved: 'Appearance saved', unsavedChanges: 'Unsaved changes', livePreview: 'LIVE PREVIEW',
-    obsResult: 'How it will look in OBS', live: 'Live', loadDemo: 'Use demo match', demoHelp: 'Temporarily replaces the match shown in OBS too.', copyUrl: 'Copy URL', openPreview: 'Open overlay', resetMatch: 'Clear detected match',
+    showHero: 'Hero name', showLevels: 'Levels', showTalentNames: 'Talent names', saveAppearance: 'Save appearance', appearanceSaved: 'Saved automatically ✓', unsavedChanges: 'Saving…', saveFailed: 'Could not save', livePreview: 'LIVE PREVIEW',
+    obsResult: 'How it will look in OBS', live: 'Live', previewMode: 'Preview state', withTalents: 'With talents', withoutTalents: 'Without talents', loadDemo: 'Use demo match', demoHelp: 'Temporarily replaces the match shown in OBS too.', copyUrl: 'Copy URL', openPreview: 'Open overlay', resetMatch: 'Clear detected match',
     advanced: 'ADVANCED', connectionSettings: 'Game and connection', regenerate: 'Regenerate catalog', battleTagPlaceholder: 'Name#1234', hotsPath: 'HotS path',
     accountsFolder: 'Accounts folder', autoDetect: 'Detected automatically', obsPort: 'OBS port', gameDataLanguage: 'Talent language', saveSettings: 'Save settings',
     privacyFooter: '100% local · No telemetry · Your matches never leave this computer', ready: 'Everything ready', attention: 'Needs attention', searching: 'Searching…',
@@ -52,6 +60,7 @@ let configState;
 let language = 'es';
 let toastTimer;
 let styleDirty = false;
+let styleSaveTimer;
 
 function t(key, values = {}) {
   let value = i18n[language]?.[key] ?? i18n.es[key] ?? key;
@@ -172,6 +181,24 @@ function setStyleDirty(dirty) {
   const state = $('#style-save-state');
   state.textContent = t(dirty ? 'unsavedChanges' : 'appearanceSaved');
   state.classList.toggle('dirty', dirty);
+  state.classList.remove('bad');
+}
+
+function scheduleStyleSave() {
+  clearTimeout(styleSaveTimer);
+  setStyleDirty(true);
+  styleSaveTimer = setTimeout(async () => {
+    if (!configState) return;
+    try {
+      await saveConfig({ ...configState, overlayStyle: readStyleForm() }, '', false);
+      setStyleDirty(false);
+    } catch (error) {
+      const state = $('#style-save-state');
+      state.textContent = t('saveFailed');
+      state.classList.add('bad');
+      showToast(error.message, true);
+    }
+  }, 550);
 }
 
 function updateDependentControls() {
@@ -201,11 +228,11 @@ function fitPreview() {
   frame.style.setProperty('--preview-scale', Math.min(1, availableWidth / contentWidth).toFixed(3));
 }
 
-async function saveConfig(next, successMessage = t('saved')) {
+async function saveConfig(next, successMessage = t('saved'), notify = true) {
   await post('/api/config', next);
   configState = next;
   fillGeneralForm(configState);
-  showToast(successMessage);
+  if (notify && successMessage) showToast(successMessage);
 }
 
 async function load() {
@@ -218,16 +245,14 @@ async function load() {
   render(status);
 }
 
-$('#style-form').addEventListener('input', () => { updateOutputs(); updateDependentControls(); setStyleDirty(true); previewStyle(); });
-$('#style-form').addEventListener('submit', async event => {
-  event.preventDefault();
-  const button = event.submitter;
-  setBusy(button, true);
-  try { await saveConfig({ ...configState, overlayStyle: readStyleForm() }); setStyleDirty(false); }
-  catch (error) { showToast(error.message, true); }
-  finally { setBusy(button, false); }
-});
-$('#defaults').addEventListener('click', () => { fillStyleForm(defaultStyle); setStyleDirty(true); showToast(t('defaultsPreview')); });
+$('#style-form').addEventListener('input', () => { updateOutputs(); updateDependentControls(); previewStyle(); scheduleStyleSave(); });
+$('#style-form').addEventListener('submit', event => event.preventDefault());
+$('#defaults').addEventListener('click', () => { fillStyleForm(defaultStyle); scheduleStyleSave(); });
+document.querySelectorAll('[data-preset]').forEach(button => button.addEventListener('click', () => {
+  fillStyleForm(presets[button.dataset.preset]);
+  document.querySelectorAll('[data-preset]').forEach(item => item.classList.toggle('active', item === button));
+  scheduleStyleSave();
+}));
 
 $('#config-form').addEventListener('submit', async event => {
   event.preventDefault();
@@ -254,13 +279,15 @@ $('#previewEntry').addEventListener('click', () => {
   previewStyle();
   $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-entry-preview' }, location.origin);
 });
+document.querySelectorAll('[data-preview-mode]').forEach(button => button.addEventListener('click', () => {
+  document.querySelectorAll('[data-preview-mode]').forEach(item => item.classList.toggle('active', item === button));
+  $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-preview-mode', mode: button.dataset.previewMode }, location.origin);
+}));
 $('#copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#obs-url').textContent); showToast(t('copied')); } catch (error) { showToast(error.message, true); } });
-$('#demo').addEventListener('click', async () => { try { await post('/api/demo'); showToast(t('demoLoaded')); } catch (error) { showToast(error.message, true); } });
 $('#regenerate').addEventListener('click', async () => { try { await post('/api/catalog/regenerate'); showToast(t('catalogQueued')); } catch (error) { showToast(error.message, true); } });
 $('#reset').addEventListener('click', async () => { try { await post('/api/match/reset'); showToast(t('matchReset')); } catch (error) { showToast(error.message, true); } });
 $('#overlay-preview').addEventListener('load', () => { previewStyle(); fitPreview(); });
 new ResizeObserver(fitPreview).observe($('.preview-stage'));
-window.addEventListener('beforeunload', event => { if (styleDirty) { event.preventDefault(); event.returnValue = ''; } });
 
 load().catch(error => showToast(error.message, true));
 const events = new EventSource('/events');

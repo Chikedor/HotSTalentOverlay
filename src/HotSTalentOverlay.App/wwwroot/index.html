@@ -58,58 +58,65 @@
           <div><span class="eyebrow" data-i18n="appearance">APARIENCIA</span><h2 data-i18n="customizeOverlay">Personaliza tus talentos</h2></div>
           <button id="defaults" class="button secondary compact" type="button" data-i18n="restoreDefaults">Restaurar</button>
         </div>
-        <p class="section-description" data-i18n="appearanceHelp">Los cambios se reflejan en la previsualización y en OBS al guardar.</p>
+        <p class="section-description" data-i18n="appearanceHelp">Elige un estilo y ajústalo. Los cambios se guardan automáticamente.</p>
 
         <form id="style-form">
-          <fieldset>
-            <legend data-i18n="colors">Colores</legend>
-            <div class="color-grid">
-              <label class="color-field"><span data-i18n="accent">Acento</span><span><input id="accentColor" type="color"><output for="accentColor"></output></span></label>
-              <label class="color-field"><span data-i18n="borderColor">Color de huecos vacíos</span><span><input id="borderColor" type="color"><output for="borderColor"></output></span></label>
-              <label class="color-field"><span data-i18n="backgroundColor">Fondo del hueco</span><span><input id="backgroundColor" type="color"><output for="backgroundColor"></output></span></label>
-              <label class="color-field"><span data-i18n="textColor">Texto</span><span><input id="textColor" type="color"><output for="textColor"></output></span></label>
+          <fieldset class="preset-fieldset">
+            <legend data-i18n="chooseStyle">Elige un estilo</legend>
+            <div class="preset-grid" role="group" data-i18n-aria="chooseStyle">
+              <button class="preset-card" type="button" data-preset="classic"><i class="preset-swatch classic" aria-hidden="true"></i><span data-i18n="presetClassic">Clásico</span></button>
+              <button class="preset-card" type="button" data-preset="clean"><i class="preset-swatch clean" aria-hidden="true"></i><span data-i18n="presetClean">Limpio</span></button>
+              <button class="preset-card" type="button" data-preset="neon"><i class="preset-swatch neon" aria-hidden="true"></i><span data-i18n="presetNeon">Neón</span></button>
+              <button class="preset-card" type="button" data-preset="compact"><i class="preset-swatch compact" aria-hidden="true"></i><span data-i18n="presetCompact">Compacto</span></button>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend data-i18n="shapeSpacing">Forma y espaciado</legend>
+            <legend data-i18n="essentials">Lo esencial</legend>
             <div class="control-grid">
-              <label><span data-i18n="borderStyle">Estilo del borde</span><select id="borderStyle"><option value="solid" data-i18n="solid">Sólido</option><option value="double" data-i18n="double">Doble</option><option value="dashed" data-i18n="dashed">Discontinuo</option><option value="none" data-i18n="none">Ninguno</option></select></label>
-              <label><span data-i18n="iconSize">Tamaño del icono</span><span class="range-row"><input id="iconSize" type="range" min="40" max="160" step="2"><output for="iconSize"></output></span></label>
-              <label id="borderWidthControl"><span data-i18n="borderWidth">Grosor del borde</span><span class="range-row"><input id="borderWidth" type="range" min="0" max="8"><output for="borderWidth"></output></span></label>
-              <label><span data-i18n="rounding">Redondeado</span><span class="range-row"><input id="borderRadius" type="range" min="0" max="32" step="2"><output for="borderRadius"></output></span></label>
-              <label><span data-i18n="spacing">Separación</span><span class="range-row"><input id="gap" type="range" min="0" max="40" step="2"><output for="gap"></output></span></label>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend data-i18n="motion">Movimiento</legend>
-            <div class="control-grid">
+              <label class="color-field"><span data-i18n="accent">Color principal</span><span><input id="accentColor" type="color"><output for="accentColor"></output></span></label>
+              <label><span data-i18n="iconSize">Tamaño</span><span class="range-row"><input id="iconSize" type="range" min="40" max="160" step="2"><output for="iconSize"></output></span></label>
               <label><span data-i18n="entryAnimation">Al aparecer</span><select id="entryAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="fade" data-i18n="fade">Fundido</option><option value="slide" data-i18n="slide">Deslizamiento</option><option value="pop" data-i18n="pop">Salto</option><option value="flip" data-i18n="flip">Giro</option></select></label>
-              <div id="previewAnimationControl" class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto sin guardar</span><button id="previewEntry" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewAnimation">Probar aparición</span></button></div>
-              <label id="animationSpeedControl" class="wide-control"><span data-i18n="animationSpeed">Velocidad de aparición</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
+              <div id="previewAnimationControl" class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto</span><button id="previewEntry" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewAnimation">Probar aparición</span></button></div>
+            </div>
+            <div class="switch-grid essential-switches">
+              <label class="switch"><input id="showLevels" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showLevels">Mostrar niveles</b></label>
+              <label class="switch"><input id="showTalentNames" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showTalentNames">Mostrar nombres</b></label>
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend data-i18n="visibleInfo">Información visible</legend>
-            <div class="switch-grid">
-              <label class="switch"><input id="showHero" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showHero">Nombre del héroe</b></label>
-              <label class="switch"><input id="showLevels" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showLevels">Niveles</b></label>
-              <label class="switch"><input id="showTalentNames" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showTalentNames">Nombres de talentos</b></label>
-            </div>
-          </fieldset>
+          <details class="more-options">
+            <summary><span data-i18n="moreOptions">Más opciones</span><small data-i18n="moreOptionsHelp">Bordes, fondo, espaciado y velocidad</small></summary>
+            <fieldset>
+              <legend data-i18n="colors">Colores</legend>
+              <div class="color-grid">
+                <label class="color-field"><span data-i18n="borderColor">Huecos vacíos</span><span><input id="borderColor" type="color"><output for="borderColor"></output></span></label>
+                <label class="color-field"><span data-i18n="backgroundColor">Fondo del hueco</span><span><input id="backgroundColor" type="color"><output for="backgroundColor"></output></span></label>
+                <label class="color-field"><span data-i18n="textColor">Texto</span><span><input id="textColor" type="color"><output for="textColor"></output></span></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend data-i18n="shapeSpacing">Forma y espaciado</legend>
+              <div class="control-grid">
+                <label><span data-i18n="borderStyle">Estilo del borde</span><select id="borderStyle"><option value="solid" data-i18n="solid">Sólido</option><option value="double" data-i18n="double">Doble</option><option value="dashed" data-i18n="dashed">Discontinuo</option><option value="none" data-i18n="none">Ninguno</option></select></label>
+                <label id="borderWidthControl"><span data-i18n="borderWidth">Grosor del borde</span><span class="range-row"><input id="borderWidth" type="range" min="0" max="8"><output for="borderWidth"></output></span></label>
+                <label><span data-i18n="rounding">Redondeado</span><span class="range-row"><input id="borderRadius" type="range" min="0" max="32" step="2"><output for="borderRadius"></output></span></label>
+                <label><span data-i18n="spacing">Separación</span><span class="range-row"><input id="gap" type="range" min="0" max="40" step="2"><output for="gap"></output></span></label>
+                <label id="animationSpeedControl" class="wide-control"><span data-i18n="animationSpeed">Velocidad de aparición</span><span class="range-row"><input id="animationSpeed" type="range" min="50" max="200" step="10"><output for="animationSpeed"></output></span></label>
+              </div>
+              <div class="switch-grid advanced-switches"><label class="switch"><input id="showHero" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showHero">Mostrar héroe</b></label></div>
+            </fieldset>
+          </details>
 
-          <div class="save-bar"><span id="style-save-state" class="save-state" role="status" data-i18n="appearanceSaved">Apariencia guardada</span><button class="button primary save-style" type="submit" data-i18n="saveAppearance">Guardar apariencia</button></div>
+          <div class="save-bar"><span id="style-save-state" class="save-state" role="status" data-i18n="appearanceSaved">Guardado automáticamente ✓</span></div>
         </form>
       </section>
 
       <aside class="preview-column">
         <section class="panel preview-panel">
           <div class="section-heading"><div><span class="eyebrow" data-i18n="livePreview">PREVIEW EN DIRECTO</span><h2 data-i18n="obsResult">Así se verá en OBS</h2></div><span class="live-dot"><i></i><span data-i18n="live">En vivo</span></span></div>
+          <div class="preview-mode" role="group" data-i18n-aria="previewMode"><button class="active" type="button" data-preview-mode="filled" data-i18n="withTalents">Con talentos</button><button type="button" data-preview-mode="empty" data-i18n="withoutTalents">Sin talentos</button></div>
           <div class="preview-stage"><iframe id="overlay-preview" src="/overlay.html?preview=1" data-i18n-title="overlayPreview" title="Preview del overlay"></iframe></div>
-          <button id="demo" class="button secondary full" type="button" data-i18n="loadDemo">Usar partida de demostración</button>
-          <p class="action-help" data-i18n="demoHelp">Sustituye temporalmente la partida mostrada también en OBS.</p>
         </section>
 
         <section class="panel obs-panel">

@@ -12,6 +12,8 @@ let activeStyle = fallbackStyle;
 let initialized = false;
 let currentMatchId = '';
 let transitionTimer;
+let lastState;
+let previewMode = 'filled';
 
 for (const level of tiers) {
   const slot = document.createElement('div');
@@ -91,6 +93,15 @@ function replayEntryAnimation() {
 }
 
 function render(state) {
+  lastState = state;
+  if (new URLSearchParams(location.search).has('preview')) {
+    if (previewMode === 'empty') state = { ...state, heroName: '', talents: [] };
+    else if (!(state.talents || []).length) state = {
+      ...state,
+      heroName: state.heroName || 'Valla',
+      talents: tiers.map(level => ({ level, talentTreeId: `preview-${level}`, name: state.uiLanguage === 'en' ? `Talent ${level}` : `Talento ${level}` })),
+    };
+  }
   const nextMatchId = state.matchId || '';
   const isNewMatch = initialized && currentMatchId && nextMatchId && nextMatchId !== currentMatchId;
   clearTimeout(transitionTimer);
@@ -117,6 +128,10 @@ window.addEventListener('message', event => {
   if (event.origin !== location.origin) return;
   if (event.data?.type === 'overlay-style-preview') applyStyle(event.data.style);
   if (event.data?.type === 'overlay-entry-preview') replayEntryAnimation();
+  if (event.data?.type === 'overlay-preview-mode') {
+    previewMode = event.data.mode === 'empty' ? 'empty' : 'filled';
+    if (lastState) render(lastState);
+  }
 });
 
 fetch('/api/status').then(response => response.json()).then(render);
