@@ -8,6 +8,7 @@ public sealed record AppConfig
     public int ObsPort { get; init; } = 3874;
     public string Locale { get; init; } = "esES";
     public string UiLanguage { get; init; } = "es";
+    public bool SetupCompleted { get; init; }
     public OverlayStyleConfig OverlayStyle { get; init; } = new();
 }
 

@@ -37,4 +37,16 @@ New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 $zip = Join-Path $OutputDirectory 'HotSTalentOverlay-win-x64.zip'
 if (Test-Path $zip) { Remove-Item -LiteralPath $zip -Force }
 Compress-Archive -Path (Join-Path $publish '*') -DestinationPath $zip -CompressionLevel Optimal
+
+$installerProject = Join-Path $root 'src\HotSTalentOverlay.Installer\HotSTalentOverlay.Installer.csproj'
+$installerOutput = Join-Path $temp 'installer'
+if (Test-Path $installerOutput) { Remove-Item -LiteralPath $installerOutput -Recurse -Force }
+& $sdk restore $installerProject --runtime win-x64 --source 'https://api.nuget.org/v3/index.json' -p:NuGetAudit=false -p:PayloadZip="$zip" --disable-build-servers -m:1
+if ($LASTEXITCODE -ne 0) { throw "dotnet restore del instalador falló con el código $LASTEXITCODE." }
+& $sdk publish $installerProject --configuration Release --runtime win-x64 --self-contained true --output $installerOutput --no-restore -p:NuGetAudit=false -p:PayloadZip="$zip" -p:PublishSingleFile=true --disable-build-servers -m:1
+if ($LASTEXITCODE -ne 0) { throw "dotnet publish del instalador falló con el código $LASTEXITCODE." }
+$setup = Join-Path $OutputDirectory 'HotSTalentOverlay-Setup.exe'
+Copy-Item -LiteralPath (Join-Path $installerOutput 'HotSTalentOverlay-Setup.exe') -Destination $setup -Force
+
 Write-Host "Paquete creado: $zip" -ForegroundColor Green
+Write-Host "Instalador creado: $setup" -ForegroundColor Green

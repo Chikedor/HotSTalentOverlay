@@ -14,7 +14,7 @@ const presets = {
 };
 const i18n = {
   es: {
-    skip: 'Saltar al contenido', localControl: 'CONTROL LOCAL', tagline: 'Tus talentos en OBS, automáticamente y sin salir de tu PC.', language: 'Idioma', interfaceLanguage: 'Idioma de la interfaz', status: 'Estado', overlayPreview: 'Preview del overlay',
+    skip: 'Saltar al contenido', localControl: 'CONTROL LOCAL', tagline: 'Tus talentos en OBS, automáticamente y sin salir de tu PC.', language: 'Idioma', interfaceLanguage: 'Idioma de la interfaz', status: 'Estado', overlayPreview: 'Preview del overlay', setupTitle: 'Configuración inicial', firstSetup: 'PRIMERA CONFIGURACIÓN', welcomeTitle: 'Vamos a dejarlo preparado', welcomeText: 'Solo tardaremos un minuto. Primero, elige el idioma de la interfaz.', gameCheck: 'COMPROBACIÓN DEL JUEGO', gameCheckTitle: 'Buscando Heroes of the Storm', gameCheckText: 'Comprobamos automáticamente el juego y la carpeta de partidas.', gameInstalled: 'Juego instalado', matchesFolder: 'Carpeta de partidas', detected: 'Detectado', notFound: 'No encontrado', continue: 'Continuar', obsSetupTitle: 'Añádelo a OBS', obsSetupText: 'En OBS crea una Fuente de navegador, pega esta URL y usa un lienzo transparente.', obsStep1: 'Añadir fuente', obsStep2: 'Elegir Navegador', obsStep3: 'Pegar la URL', finishSetup: 'Terminar configuración', rerunSetup: 'Repetir asistente', setupDone: 'Configuración terminada.',
     localCatalog: 'CATÁLOGO LOCAL', liveDetector: 'DETECTOR EN DIRECTO', currentMatch: 'PARTIDA ACTUAL', appearance: 'APARIENCIA',
     customizeOverlay: 'Personaliza tus talentos', restoreDefaults: 'Restaurar', appearanceHelp: 'Elige un estilo y ajústalo. Los cambios se guardan automáticamente.',
     chooseStyle: 'Elige un estilo', presetClassic: 'Clásico', presetClean: 'Limpio', presetNeon: 'Neón', presetCompact: 'Compacto', essentials: 'Lo esencial', moreOptions: 'Más opciones', moreOptionsHelp: 'Bordes, fondo, espaciado y velocidad',
@@ -34,7 +34,7 @@ const i18n = {
     catalogReady: 'Listo', catalogExtracting: 'Extrayendo desde CASC…', catalogError: 'Error de extracción', catalogNoGame: 'HotS no detectado',
   },
   en: {
-    skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview',
+    skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview', setupTitle: 'Initial setup', firstSetup: 'FIRST-TIME SETUP', welcomeTitle: 'Let’s get everything ready', welcomeText: 'This takes about a minute. First, choose the interface language.', gameCheck: 'GAME CHECK', gameCheckTitle: 'Finding Heroes of the Storm', gameCheckText: 'We automatically check the game and match folder.', gameInstalled: 'Game installed', matchesFolder: 'Match folder', detected: 'Detected', notFound: 'Not found', continue: 'Continue', obsSetupTitle: 'Add it to OBS', obsSetupText: 'In OBS create a Browser Source, paste this URL and use a transparent canvas.', obsStep1: 'Add source', obsStep2: 'Choose Browser', obsStep3: 'Paste the URL', finishSetup: 'Finish setup', rerunSetup: 'Run setup again', setupDone: 'Setup complete.',
     localCatalog: 'LOCAL CATALOG', liveDetector: 'LIVE DETECTOR', currentMatch: 'CURRENT MATCH', appearance: 'APPEARANCE',
     customizeOverlay: 'Customize your talents', restoreDefaults: 'Restore', appearanceHelp: 'Choose a style and adjust it. Changes save automatically.',
     chooseStyle: 'Choose a style', presetClassic: 'Classic', presetClean: 'Clean', presetNeon: 'Neon', presetCompact: 'Compact', essentials: 'Essentials', moreOptions: 'More options', moreOptionsHelp: 'Borders, background, spacing and speed',
@@ -124,6 +124,7 @@ function render(next) {
     box.append(label);
     return box;
   }));
+  updateWizardStatus();
   requestAnimationFrame(fitPreview);
 }
 
@@ -147,6 +148,24 @@ function setBusy(button, busy) { button.disabled = busy; button.setAttribute('ar
 function fillGeneralForm(config) {
   for (const key of ['battleTag', 'hotsPath', 'replayPath', 'obsPort', 'locale']) $(`#${key}`).value = config[key] ?? '';
   $('#obs-url').textContent = `${location.protocol}//${location.hostname}:${config.obsPort}/overlay.html`;
+  $('#wizard-obs-url').textContent = $('#obs-url').textContent;
+}
+
+function showWizardStep(step) {
+  $('#setup-wizard').hidden = false;
+  document.querySelectorAll('[data-wizard-step]').forEach(panel => { panel.hidden = Number(panel.dataset.wizardStep) !== step; });
+  document.querySelectorAll('.wizard-progress i').forEach((item, index) => item.classList.toggle('active', index < step));
+  updateWizardStatus();
+}
+
+function updateWizardStatus() {
+  if (!appState) return;
+  const gameOk = Boolean(appState.hotsDetected);
+  const replayOk = Boolean(appState.replayPath);
+  $('#wizard-game-dot').classList.toggle('ok', gameOk);
+  $('#wizard-replay-dot').classList.toggle('ok', replayOk);
+  $('#wizard-game-result').textContent = gameOk ? (appState.hotsPath || t('detected')) : t('notFound');
+  $('#wizard-replay-result').textContent = replayOk ? appState.replayPath : t('notFound');
 }
 
 function fillStyleForm(style) {
@@ -243,6 +262,7 @@ async function load() {
   fillStyleForm(configState.overlayStyle);
   setStyleDirty(false);
   render(status);
+  if (!configState.setupCompleted) showWizardStep(1);
 }
 
 $('#style-form').addEventListener('input', () => { updateOutputs(); updateDependentControls(); previewStyle(); scheduleStyleSave(); });
@@ -275,6 +295,20 @@ document.querySelectorAll('[data-language]').forEach(button => button.addEventLi
   try { await saveConfig({ ...configState, uiLanguage: language }); }
   catch (error) { showToast(error.message, true); }
 }));
+document.querySelectorAll('[data-wizard-language]').forEach(button => button.addEventListener('click', async () => {
+  applyLanguage(button.dataset.wizardLanguage);
+  if (configState) await saveConfig({ ...configState, uiLanguage: language }, '', false).catch(error => showToast(error.message, true));
+  showWizardStep(2);
+}));
+document.querySelectorAll('[data-wizard-next]').forEach(button => button.addEventListener('click', () => showWizardStep(Number(button.dataset.wizardNext))));
+$('#wizard-copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#wizard-obs-url').textContent); showToast(t('copied')); } catch (error) { showToast(error.message, true); } });
+$('#wizard-finish').addEventListener('click', async () => {
+  try {
+    await saveConfig({ ...configState, uiLanguage: language, setupCompleted: true }, t('setupDone'));
+    $('#setup-wizard').hidden = true;
+  } catch (error) { showToast(error.message, true); }
+});
+$('#rerun-setup').addEventListener('click', () => showWizardStep(1));
 $('#previewEntry').addEventListener('click', () => {
   previewStyle();
   $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-entry-preview' }, location.origin);

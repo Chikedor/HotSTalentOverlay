@@ -9,6 +9,35 @@
 </head>
 <body>
   <a class="skip-link" href="#content" data-i18n="skip">Saltar al contenido</a>
+  <section id="setup-wizard" class="wizard-backdrop" role="dialog" aria-modal="true" data-i18n-aria="setupTitle" aria-label="Configuración inicial" hidden>
+    <div class="wizard-card">
+      <div class="wizard-progress" aria-hidden="true"><i class="active"></i><i></i><i></i></div>
+      <div class="wizard-step" data-wizard-step="1">
+        <span class="eyebrow" data-i18n="firstSetup">PRIMERA CONFIGURACIÓN</span>
+        <h2 data-i18n="welcomeTitle">Vamos a dejarlo preparado</h2>
+        <p data-i18n="welcomeText">Solo tardaremos un minuto. Primero, elige el idioma de la interfaz.</p>
+        <div class="wizard-languages">
+          <button class="language-choice" type="button" data-wizard-language="es"><svg viewBox="0 0 24 16" aria-hidden="true"><path fill="#aa151b" d="M0 0h24v16H0z"/><path fill="#f1bf00" d="M0 4h24v8H0z"/></svg>Español</button>
+          <button class="language-choice" type="button" data-wizard-language="en"><svg viewBox="0 0 24 16" aria-hidden="true"><path fill="#012169" d="M0 0h24v16H0z"/><path stroke="#fff" stroke-width="3" d="m0 0 24 16M24 0 0 16"/><path stroke="#c8102e" stroke-width="1.5" d="m0 0 24 16M24 0 0 16"/><path stroke="#fff" stroke-width="5" d="M12 0v16M0 8h24"/><path stroke="#c8102e" stroke-width="3" d="M12 0v16M0 8h24"/></svg>English</button>
+        </div>
+      </div>
+      <div class="wizard-step" data-wizard-step="2" hidden>
+        <span class="eyebrow" data-i18n="gameCheck">COMPROBACIÓN DEL JUEGO</span>
+        <h2 data-i18n="gameCheckTitle">Buscando Heroes of the Storm</h2>
+        <p data-i18n="gameCheckText">Comprobamos automáticamente el juego y la carpeta de partidas.</p>
+        <div class="wizard-checks"><div><i id="wizard-game-dot"></i><span data-i18n="gameInstalled">Juego instalado</span><b id="wizard-game-result">…</b></div><div><i id="wizard-replay-dot"></i><span data-i18n="matchesFolder">Carpeta de partidas</span><b id="wizard-replay-result">…</b></div></div>
+        <button class="button primary full" type="button" data-wizard-next="3" data-i18n="continue">Continuar</button>
+      </div>
+      <div class="wizard-step" data-wizard-step="3" hidden>
+        <span class="eyebrow">OBS</span>
+        <h2 data-i18n="obsSetupTitle">Añádelo a OBS</h2>
+        <p data-i18n="obsSetupText">En OBS crea una Fuente de navegador, pega esta URL y usa un lienzo transparente.</p>
+        <div class="wizard-steps"><span><b>1</b><em data-i18n="obsStep1">Añadir fuente</em></span><span><b>2</b><em data-i18n="obsStep2">Elegir Navegador</em></span><span><b>3</b><em data-i18n="obsStep3">Pegar la URL</em></span></div>
+        <div class="wizard-url"><code id="wizard-obs-url"></code><button id="wizard-copy" class="button secondary" type="button" data-i18n="copyUrl">Copiar URL</button></div>
+        <button id="wizard-finish" class="button primary full" type="button" data-i18n="finishSetup">Terminar configuración</button>
+      </div>
+    </div>
+  </section>
   <main id="content" class="shell">
     <header class="topbar">
       <div class="brand">
@@ -128,7 +157,7 @@
     </div>
 
     <section class="panel settings-panel">
-      <div class="section-heading"><div><span class="eyebrow" data-i18n="advanced">AVANZADO</span><h2 data-i18n="connectionSettings">Juego y conexión</h2></div><div class="advanced-actions"><button id="reset" class="button quiet compact danger" type="button" data-i18n="resetMatch">Vaciar partida detectada</button><button id="regenerate" class="button quiet compact" type="button" data-i18n="regenerate">Regenerar catálogo</button></div></div>
+      <div class="section-heading"><div><span class="eyebrow" data-i18n="advanced">AVANZADO</span><h2 data-i18n="connectionSettings">Juego y conexión</h2></div><div class="advanced-actions"><button id="rerun-setup" class="button quiet compact" type="button" data-i18n="rerunSetup">Repetir asistente</button><button id="reset" class="button quiet compact danger" type="button" data-i18n="resetMatch">Vaciar partida detectada</button><button id="regenerate" class="button quiet compact" type="button" data-i18n="regenerate">Regenerar catálogo</button></div></div>
       <form id="config-form" class="settings-form">
         <label><span>BattleTag</span><input id="battleTag" data-i18n-placeholder="battleTagPlaceholder" placeholder="Nombre#1234"></label>
         <label class="wide"><span data-i18n="hotsPath">Ruta de HotS</span><input id="hotsPath" placeholder="C:\Program Files (x86)\Heroes of the Storm"></label>

@@ -15,14 +15,13 @@ A private, local OBS overlay for *Heroes of the Storm*. It watches the game's `S
 
 ## Quick start
 
-### Downloaded package
+### Windows installer (recommended)
 
-1. Download and extract `HotSTalentOverlay-win-x64.zip` from the latest release.
-2. Run `HotSTalentOverlay.exe`.
-3. Open <http://127.0.0.1:3874/>.
-4. Wait for the status page to show **Todo listo**. The first catalog extraction can take around 30 seconds.
+1. Download `HotSTalentOverlay-Setup.exe` from the latest release.
+2. Click **Install** and then **Open**.
+3. Follow the one-minute setup assistant to detect HotS and add the Browser Source to OBS.
 
-The Windows package is self-contained and does not require a separate .NET installation.
+The installer adds Start menu and optional desktop/startup shortcuts. The app runs from the Windows tray and opens the dashboard automatically. No separate .NET installation is required. The portable ZIP remains available for users who prefer it.
 
 ### Build from source
 
@@ -42,7 +41,7 @@ The script downloads a repository-local .NET SDK and `HeroesDataParser`, restore
 3. Use a width of `1920` and height of `1080`.
 4. Optionally enable **Shutdown source when not visible**.
 
-Use **Load demo** on the dashboard to test the transparent overlay without starting a match.
+Use the **With talents / Without talents** preview switch to test both overlay states without changing OBS.
 
 ## Customize the overlay
 
@@ -54,7 +53,7 @@ Open the dashboard and use **Appearance** to tailor the overlay without editing 
 - Replay the selected appearance animation directly in the preview before saving.
 - Smoothly clears the previous talents when a new match is detected.
 - Show or hide the hero name, talent levels, and localized talent names.
-- Preview every change instantly, then save it for OBS and future sessions.
+- Preview every change instantly; it is saved automatically for OBS and future sessions.
 
 Use the Spanish and British flag buttons to change the dashboard language. **Talent language** controls the game data extracted from HotS and is intentionally configured separately.
 
@@ -130,14 +129,13 @@ Overlay privado y local para OBS y *Heroes of the Storm*. Vigila los archivos `S
 
 ## Inicio rápido
 
-### Paquete descargado
+### Instalador para Windows (recomendado)
 
-1. Descarga y descomprime `HotSTalentOverlay-win-x64.zip` desde la última release.
-2. Ejecuta `HotSTalentOverlay.exe`.
-3. Abre <http://127.0.0.1:3874/>.
-4. Espera hasta ver **Todo listo**. La primera extracción del catálogo puede tardar unos 30 segundos.
+1. Descarga `HotSTalentOverlay-Setup.exe` desde la última release.
+2. Pulsa **Instalar** y después **Abrir**.
+3. Sigue el asistente de un minuto para detectar HotS y añadir la fuente Navegador a OBS.
 
-El paquete para Windows es autónomo y no requiere instalar .NET por separado.
+El instalador añade accesos directos al menú Inicio y, opcionalmente, al escritorio y al inicio de Windows. La aplicación vive en la bandeja del sistema y abre el panel automáticamente. No requiere instalar .NET. El ZIP portátil continúa disponible para quien lo prefiera.
 
 ### Compilar desde el código fuente
 
@@ -157,7 +155,7 @@ El script descarga una copia local de .NET y `HeroesDataParser`, restaura las de
 3. Configura un ancho de `1920` y un alto de `1080`.
 4. Opcionalmente, activa **Cerrar fuente cuando no sea visible**.
 
-Pulsa **Cargar demo** en el panel para probar el overlay transparente sin iniciar una partida.
+Usa el selector **Con talentos / Sin talentos** para probar ambos estados sin modificar OBS.
 
 ## Personalizar el overlay
 
@@ -166,7 +164,7 @@ Abre el panel y usa **Apariencia** para adaptar el overlay sin editar CSS:
 - Elige los colores de acento, borde vacío, fondo y texto.
 - Ajusta el tamaño y la separación de los iconos, además del grosor, radio y estilo del borde.
 - Selecciona cómo aparece un nuevo talento: fundido, deslizamiento, pop, giro o sin animación.
-- Reproduce la animación de aparición elegida directamente en la vista previa antes de guardar.
+- Reproduce la animación de aparición elegida directamente en la vista previa; los cambios se guardan automáticamente.
 - Vacía suavemente los talentos anteriores cuando detecta una partida nueva.
 - Muestra u oculta el nombre del héroe, los niveles y los nombres localizados de los talentos.
 - Previsualiza cada cambio al instante y guárdalo para OBS y las próximas sesiones.

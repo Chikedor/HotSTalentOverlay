@@ -99,6 +99,9 @@ app.MapGet("/events", async (HttpContext context, EventHub hub, RuntimeState sta
     }
 });
 
+bool openBrowserOnStart = !args.Contains("--background", StringComparer.OrdinalIgnoreCase) &&
+                          !args.Contains("--no-browser", StringComparer.OrdinalIgnoreCase);
+app.Lifetime.ApplicationStarted.Register(() => WindowsShell.Start(app.Lifetime, port, openBrowserOnStart));
 app.Run();
 
 public partial class Program;
