@@ -1,8 +1,22 @@
-# HotSTalentOverlay
+# HotS Talent Overlay
 
 **English** · [Español](#español)
 
-A private, local OBS overlay for *Heroes of the Storm*. It watches the game's `StormSave` files, identifies your hero and chosen talents, and updates the overlay with the real in-game icons.
+Windows app · OBS Browser Source · Local match data
+
+Show your *Heroes of the Storm* talent choices on stream, with the real in-game icons. Set it up once, add a Browser Source to OBS, and let the app follow your matches.
+
+[Download the Windows installer](https://github.com/Chikedor/HotSTalentOverlay/releases/latest) · [Get started](#quick-start) · [See the Spanish guide](#español)
+
+![HotS Talent Overlay dashboard showing a demo Valla match, appearance controls, and live preview](docs/screenshots/dashboard.jpg)
+
+*The dashboard, showing a demo match. No personal account or match data is shown in this screenshot.*
+
+### What you get
+
+| In OBS | In the dashboard | Behind the scenes |
+| --- | --- | --- |
+| Hero and talent icons update as HotS saves the match | Live preview, appearance controls, English/Spanish UI | Reads local game files; no game injection or telemetry |
 
 - Runs entirely on your Windows PC after setup.
 - Automatically detects the installed HotS build.
@@ -18,7 +32,7 @@ A private, local OBS overlay for *Heroes of the Storm*. It watches the game's `S
 
 ### Windows installer (recommended)
 
-1. Download `HotSTalentOverlay-Setup.exe` from the latest release.
+1. Download `HotSTalentOverlay-Setup.exe` from the [latest release](https://github.com/Chikedor/HotSTalentOverlay/releases/latest).
 2. Click **Install** and then **Open**.
 3. Follow the one-minute setup assistant to detect HotS and add the Browser Source to OBS.
 
@@ -45,6 +59,10 @@ The script downloads a repository-local .NET SDK and `HeroesDataParser`, restore
 4. Optionally enable **Shutdown source when not visible**.
 
 Use the **With talents / Without talents** preview switch to test both overlay states without changing OBS.
+
+![Live preview of a demo Valla talent build](docs/screenshots/overlay-preview.jpg)
+
+*What the overlay looks like with seven talents selected. The checkerboard represents transparency in OBS.*
 
 ## Customize the overlay
 
@@ -76,7 +94,7 @@ assets/talents/
 logs/latest.log
 ```
 
-The web server only binds to `127.0.0.1` by default. No telemetry or cloud service is used.
+The web server only binds to `127.0.0.1` by default. Match and account data are not uploaded. There is no telemetry; the update feature contacts GitHub only to check releases and download an update when you choose to install it.
 
 ## Troubleshooting
 
@@ -120,7 +138,19 @@ The project is licensed under MIT. The vendored HeroesToolChest dependency is al
 
 ## Español
 
-Overlay privado y local para OBS y *Heroes of the Storm*. Vigila los archivos `StormSave`, identifica tu héroe y los talentos elegidos, y actualiza el overlay con los iconos reales del juego.
+Muestra tus talentos de *Heroes of the Storm* en directo con los iconos reales del juego. Configúralo una vez, añade una fuente Navegador en OBS y deja que la aplicación siga tus partidas.
+
+[Descargar el instalador para Windows](https://github.com/Chikedor/HotSTalentOverlay/releases/latest) · [Empezar](#inicio-rápido) · [English](#hots-talent-overlay)
+
+![Panel de HotS Talent Overlay con una partida de demostración de Valla, opciones de apariencia y vista previa](docs/screenshots/dashboard.jpg)
+
+*Panel con una partida de demostración. La captura no contiene datos personales ni partidas reales.*
+
+### De un vistazo
+
+| En OBS | En el panel | En segundo plano |
+| --- | --- | --- |
+| Héroe e iconos de talentos actualizados cuando HotS guarda la partida | Vista previa, personalización e interfaz en español/inglés | Lee archivos locales del juego; sin inyección ni telemetría |
 
 - Funciona íntegramente en tu PC con Windows después de prepararlo.
 - Detecta automáticamente la build instalada de HotS.
@@ -136,7 +166,7 @@ Overlay privado y local para OBS y *Heroes of the Storm*. Vigila los archivos `S
 
 ### Instalador para Windows (recomendado)
 
-1. Descarga `HotSTalentOverlay-Setup.exe` desde la última release.
+1. Descarga `HotSTalentOverlay-Setup.exe` desde la [última versión](https://github.com/Chikedor/HotSTalentOverlay/releases/latest).
 2. Pulsa **Instalar** y después **Abrir**.
 3. Sigue el asistente de un minuto para detectar HotS y añadir la fuente Navegador a OBS.
 
@@ -163,6 +193,10 @@ El script descarga una copia local de .NET y `HeroesDataParser`, restaura las de
 4. Opcionalmente, activa **Cerrar fuente cuando no sea visible**.
 
 Usa el selector **Con talentos / Sin talentos** para probar ambos estados sin modificar OBS.
+
+![Vista previa de los siete talentos de Valla en una partida de demostración](docs/screenshots/overlay-preview.jpg)
+
+*Así se ve el overlay con siete talentos elegidos. El fondo de cuadros representa la transparencia en OBS.*
 
 ## Personalizar el overlay
 
@@ -194,7 +228,7 @@ assets/talents/
 logs/latest.log
 ```
 
-El servidor web sólo escucha en `127.0.0.1` de forma predeterminada. No utiliza telemetría ni servicios en la nube.
+El servidor web solo escucha en `127.0.0.1` de forma predeterminada. No se suben datos de partidas ni de la cuenta. No hay telemetría; la función de actualización contacta con GitHub únicamente para comprobar versiones y descargar una actualización cuando eliges instalarla.
 
 ## Diagnóstico
 
