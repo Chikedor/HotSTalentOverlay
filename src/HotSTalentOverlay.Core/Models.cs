@@ -26,6 +26,7 @@ public sealed record OverlayStyleConfig
     public bool ShowHero { get; init; } = true;
     public bool ShowLevels { get; init; } = true;
     public bool ShowTalentNames { get; init; }
+    public bool ShowEmptySlots { get; init; } = true;
     public string EntryAnimation { get; init; } = "slide";
     public int AnimationSpeed { get; init; } = 100;
 }

@@ -5,7 +5,7 @@ const overlay = document.querySelector('#overlay');
 const fallbackStyle = {
   accentColor: '#b9a8ff', borderColor: '#7869b3', backgroundColor: '#11101c', textColor: '#ffffff',
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
-  showHero: true, showLevels: true, showTalentNames: false,
+  showHero: true, showLevels: true, showTalentNames: false, showEmptySlots: true,
   entryAnimation: 'slide', animationSpeed: 100,
 };
 let activeStyle = fallbackStyle;
@@ -43,6 +43,7 @@ function applyStyle(style) {
   for (const slot of slots.children) {
     slot.querySelector('.level').hidden = !activeStyle.showLevels;
     slot.querySelector('.talent-name').hidden = !activeStyle.showTalentNames;
+    slot.classList.toggle('empty-slot-hidden', !activeStyle.showEmptySlots && !slot.dataset.talentId);
   }
 }
 
@@ -78,6 +79,7 @@ function renderState(state, suppressEntry = false) {
         slot.classList.add(`entry-${activeStyle.entryAnimation}`);
       }
     }
+    slot.classList.toggle('empty-slot-hidden', !activeStyle.showEmptySlots && !nextId);
   }
   initialized = true;
 }

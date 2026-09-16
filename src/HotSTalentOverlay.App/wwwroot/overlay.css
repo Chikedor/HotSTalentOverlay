@@ -19,6 +19,7 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background:
 #hero[hidden] { display: none; }
 #slots { display: flex; align-items: flex-start; gap: var(--gap); }
 .slot { display: grid; width: var(--icon-size); min-width: 0; justify-items: center; gap: 5px; transform-origin: center; }
+.slot.empty-slot-hidden { visibility: hidden; }
 .icon {
   width: var(--icon-size);
   height: var(--icon-size);

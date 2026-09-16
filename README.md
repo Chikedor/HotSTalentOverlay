@@ -53,6 +53,7 @@ Open the dashboard and use **Appearance** to tailor the overlay without editing 
 - Replay the selected appearance animation directly in the preview before saving.
 - Smoothly clears the previous talents when a new match is detected.
 - Show or hide the hero name, talent levels, and localized talent names.
+- Show unselected talent slots or hide them while keeping their space reserved.
 - Preview every change instantly; it is saved automatically for OBS and future sessions.
 
 Use the Spanish and British flag buttons to change the dashboard language. **Talent language** controls the game data extracted from HotS and is intentionally configured separately.
@@ -167,6 +168,7 @@ Abre el panel y usa **Apariencia** para adaptar el overlay sin editar CSS:
 - Reproduce la animación de aparición elegida directamente en la vista previa; los cambios se guardan automáticamente.
 - Vacía suavemente los talentos anteriores cuando detecta una partida nueva.
 - Muestra u oculta el nombre del héroe, los niveles y los nombres localizados de los talentos.
+- Muestra los huecos de talentos sin elegir u ocúltalos manteniendo reservado su espacio.
 - Previsualiza cada cambio al instante y guárdalo para OBS y las próximas sesiones.
 
 Usa los botones con las banderas española y británica para cambiar el idioma del panel. **Idioma de talentos** controla los datos del juego extraídos de HotS y se configura por separado de forma intencionada.

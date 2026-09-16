@@ -3,7 +3,7 @@ const $ = selector => document.querySelector(selector);
 const defaultStyle = {
   accentColor: '#b9a8ff', borderColor: '#7869b3', backgroundColor: '#11101c', textColor: '#ffffff',
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
-  showHero: true, showLevels: true, showTalentNames: false,
+  showHero: true, showLevels: true, showTalentNames: false, showEmptySlots: true,
   entryAnimation: 'slide', animationSpeed: 100,
 };
 const presets = {
@@ -22,7 +22,7 @@ const i18n = {
     borderStyle: 'Estilo del borde', solid: 'Sólido', double: 'Doble', dashed: 'Discontinuo', none: 'Ninguno', iconSize: 'Tamaño del icono',
     borderWidth: 'Grosor del borde', rounding: 'Redondeado', spacing: 'Separación', motion: 'Movimiento', entryAnimation: 'Al aparecer',
     fade: 'Fundido', slide: 'Deslizamiento', pop: 'Salto', flip: 'Giro', previewAnimation: 'Probar aparición', previewAnimationHelp: 'Comprueba el efecto sin guardar',
-    animationSpeed: 'Velocidad de aparición', visibleInfo: 'Información visible', showHero: 'Nombre del héroe', showLevels: 'Niveles', showTalentNames: 'Nombres de talentos',
+    animationSpeed: 'Velocidad de aparición', visibleInfo: 'Información visible', showHero: 'Nombre del héroe', showLevels: 'Niveles', showTalentNames: 'Nombres de talentos', showEmptySlots: 'Mostrar huecos sin elegir',
     saveAppearance: 'Guardar apariencia', appearanceSaved: 'Guardado automáticamente ✓', unsavedChanges: 'Guardando…', saveFailed: 'No se pudo guardar', livePreview: 'PREVIEW EN DIRECTO', obsResult: 'Así se verá en OBS', live: 'En vivo', previewMode: 'Estado de la preview', withTalents: 'Con talentos', withoutTalents: 'Sin talentos', loadDemo: 'Usar partida de demostración', demoHelp: 'Sustituye temporalmente la partida mostrada también en OBS.',
     copyUrl: 'Copiar URL', openPreview: 'Abrir overlay', resetMatch: 'Vaciar partida detectada', advanced: 'AVANZADO', connectionSettings: 'Juego y conexión',
     regenerate: 'Regenerar catálogo', battleTagPlaceholder: 'Nombre#1234', hotsPath: 'Ruta de HotS', accountsFolder: 'Carpeta Accounts', autoDetect: 'Se detecta automáticamente',
@@ -42,7 +42,7 @@ const i18n = {
     borderStyle: 'Border style', solid: 'Solid', double: 'Double', dashed: 'Dashed', none: 'None', iconSize: 'Icon size', borderWidth: 'Border width',
     rounding: 'Corner radius', spacing: 'Spacing', motion: 'Motion', entryAnimation: 'On appearance', fade: 'Fade', slide: 'Slide',
     pop: 'Pop', flip: 'Flip', previewAnimation: 'Preview appearance', previewAnimationHelp: 'Check the effect without saving', animationSpeed: 'Appearance speed', visibleInfo: 'Visible information',
-    showHero: 'Hero name', showLevels: 'Levels', showTalentNames: 'Talent names', saveAppearance: 'Save appearance', appearanceSaved: 'Saved automatically ✓', unsavedChanges: 'Saving…', saveFailed: 'Could not save', livePreview: 'LIVE PREVIEW',
+    showHero: 'Hero name', showLevels: 'Levels', showTalentNames: 'Talent names', showEmptySlots: 'Show unselected slots', saveAppearance: 'Save appearance', appearanceSaved: 'Saved automatically ✓', unsavedChanges: 'Saving…', saveFailed: 'Could not save', livePreview: 'LIVE PREVIEW',
     obsResult: 'How it will look in OBS', live: 'Live', previewMode: 'Preview state', withTalents: 'With talents', withoutTalents: 'Without talents', loadDemo: 'Use demo match', demoHelp: 'Temporarily replaces the match shown in OBS too.', copyUrl: 'Copy URL', openPreview: 'Open overlay', resetMatch: 'Clear detected match',
     advanced: 'ADVANCED', connectionSettings: 'Game and connection', regenerate: 'Regenerate catalog', battleTagPlaceholder: 'Name#1234', hotsPath: 'HotS path',
     accountsFolder: 'Accounts folder', autoDetect: 'Detected automatically', obsPort: 'OBS port', gameDataLanguage: 'Talent language', saveSettings: 'Save settings',
@@ -173,7 +173,7 @@ function fillStyleForm(style) {
   for (const key of ['accentColor', 'borderColor', 'backgroundColor', 'textColor', 'borderWidth', 'borderRadius', 'borderStyle', 'iconSize', 'gap', 'entryAnimation', 'animationSpeed']) {
     $(`#${key}`).value = resolved[key];
   }
-  for (const key of ['showHero', 'showLevels', 'showTalentNames']) $(`#${key}`).checked = resolved[key];
+  for (const key of ['showHero', 'showLevels', 'showTalentNames', 'showEmptySlots']) $(`#${key}`).checked = resolved[key];
   updateOutputs();
   updateDependentControls();
   previewStyle();
@@ -184,7 +184,7 @@ function readStyleForm() {
     accentColor: $('#accentColor').value, borderColor: $('#borderColor').value, backgroundColor: $('#backgroundColor').value, textColor: $('#textColor').value,
     borderWidth: Number($('#borderWidth').value), borderRadius: Number($('#borderRadius').value), borderStyle: $('#borderStyle').value,
     iconSize: Number($('#iconSize').value), gap: Number($('#gap').value), showHero: $('#showHero').checked,
-    showLevels: $('#showLevels').checked, showTalentNames: $('#showTalentNames').checked,
+    showLevels: $('#showLevels').checked, showTalentNames: $('#showTalentNames').checked, showEmptySlots: $('#showEmptySlots').checked,
     entryAnimation: $('#entryAnimation').value, animationSpeed: Number($('#animationSpeed').value),
   };
 }

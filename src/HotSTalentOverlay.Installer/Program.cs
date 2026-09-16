@@ -112,7 +112,7 @@ internal static class Program
 
         using RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\HotSTalentOverlay");
         key.SetValue("DisplayName", AppName);
-        key.SetValue("DisplayVersion", "1.3.0");
+        key.SetValue("DisplayVersion", "1.3.1");
         key.SetValue("Publisher", "Chikedor");
         key.SetValue("InstallLocation", InstallDirectory);
         key.SetValue("DisplayIcon", appPath);
