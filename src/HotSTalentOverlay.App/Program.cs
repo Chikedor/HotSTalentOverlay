@@ -20,6 +20,7 @@ builder.Services.AddSingleton<CatalogBuilder>();
 builder.Services.AddSingleton<StormReplaySnapshotReader>();
 builder.Services.AddSingleton<EventHub>();
 builder.Services.AddSingleton<RuntimeState>();
+builder.Services.AddHttpClient<UpdateService>(client => client.Timeout = TimeSpan.FromMinutes(5));
 builder.Services.AddSingleton<CatalogRefreshService>();
 builder.Services.AddHostedService(x => x.GetRequiredService<CatalogRefreshService>());
 builder.Services.AddSingleton<LiveWatcherService>();
@@ -45,6 +46,12 @@ app.MapGet("/api/status", (RuntimeState state, ConfigStore config) => Results.Ok
     OverlayStyle = config.Current.OverlayStyle,
 }));
 app.MapGet("/api/config", (ConfigStore config) => Results.Ok(config.Current));
+app.MapGet("/api/update", (UpdateService updates, CancellationToken ct) => updates.CheckAsync(false, ct));
+app.MapPost("/api/update/install", async (UpdateService updates, CancellationToken ct) =>
+{
+    try { await updates.InstallAsync(ct); return Results.Accepted(); }
+    catch (Exception ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
 app.MapPost("/api/config", async (AppConfig config, ConfigStore store, RuntimeState state, LiveWatcherService watcher, CatalogRefreshService refresh, GameInstallationDetector detector, CancellationToken ct) =>
 {
     try

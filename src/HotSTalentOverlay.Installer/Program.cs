@@ -18,6 +18,7 @@ internal static class Program
         if (args.Length > 0 && args[0].Equals("--verify", StringComparison.OrdinalIgnoreCase)) { VerifyPayload(); return; }
         if (args.Length > 0 && args[0].Equals("--uninstall", StringComparison.OrdinalIgnoreCase)) { StartUninstall(); return; }
         if (args.Length > 1 && args[0].Equals("--uninstall-worker", StringComparison.OrdinalIgnoreCase)) { FinishUninstall(args[1]); return; }
+        if (args.Length > 1 && args[0].Equals("--update", StringComparison.OrdinalIgnoreCase) && int.TryParse(args[1], out int processId)) { RunUpdate(processId); return; }
         Application.Run(new InstallerForm());
     }
 
@@ -93,14 +94,7 @@ internal static class Program
 
     private static void Install(bool desktopShortcut, bool startWithWindows)
     {
-        Directory.CreateDirectory(InstallDirectory);
-        using Stream payload = Assembly.GetExecutingAssembly().GetManifestResourceStream("payload.zip")
-            ?? throw new InvalidOperationException("No se encontró el paquete de instalación / Installation payload is missing.");
-        using ZipArchive archive = new(payload, ZipArchiveMode.Read);
-        archive.ExtractToDirectory(InstallDirectory, true);
-
-        string currentInstaller = Environment.ProcessPath ?? throw new InvalidOperationException("Installer path unavailable.");
-        File.Copy(currentInstaller, Path.Combine(InstallDirectory, "Uninstall.exe"), true);
+        ExtractPayload();
         string appPath = Path.Combine(InstallDirectory, "HotSTalentOverlay.exe");
         string programs = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
         CreateShortcut(Path.Combine(programs, $"{AppName}.lnk"), appPath, string.Empty);
@@ -110,15 +104,53 @@ internal static class Program
         string startupLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), $"{AppName}.lnk");
         if (startWithWindows) CreateShortcut(startupLink, appPath, "--background"); else DeleteIfExists(startupLink);
 
+        RegisterInstallation(appPath);
+    }
+
+    private static void ExtractPayload()
+    {
+        Directory.CreateDirectory(InstallDirectory);
+        using Stream payload = Assembly.GetExecutingAssembly().GetManifestResourceStream("payload.zip")
+            ?? throw new InvalidOperationException("No se encontró el paquete de instalación / Installation payload is missing.");
+        using ZipArchive archive = new(payload, ZipArchiveMode.Read);
+        archive.ExtractToDirectory(InstallDirectory, true);
+        string currentInstaller = Environment.ProcessPath ?? throw new InvalidOperationException("Installer path unavailable.");
+        File.Copy(currentInstaller, Path.Combine(InstallDirectory, "Uninstall.exe"), true);
+    }
+
+    private static void RegisterInstallation(string appPath)
+    {
         using RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\HotSTalentOverlay");
         key.SetValue("DisplayName", AppName);
-        key.SetValue("DisplayVersion", "1.3.1");
+        key.SetValue("DisplayVersion", "1.4.0");
         key.SetValue("Publisher", "Chikedor");
         key.SetValue("InstallLocation", InstallDirectory);
         key.SetValue("DisplayIcon", appPath);
         key.SetValue("UninstallString", $"\"{Path.Combine(InstallDirectory, "Uninstall.exe")}\" --uninstall");
         key.SetValue("NoModify", 1, RegistryValueKind.DWord);
         key.SetValue("NoRepair", 1, RegistryValueKind.DWord);
+    }
+
+    private static void RunUpdate(int processId)
+    {
+        try
+        {
+            try
+            {
+                using Process process = Process.GetProcessById(processId);
+                if (!process.WaitForExit(30_000)) throw new TimeoutException("La aplicación no se cerró a tiempo / The application did not close in time.");
+            }
+            catch (ArgumentException) { }
+
+            ExtractPayload();
+            string appPath = Path.Combine(InstallDirectory, "HotSTalentOverlay.exe");
+            RegisterInstallation(appPath);
+            LaunchInstalledApp();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, $"{AppName} Update", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private static void CreateShortcut(string shortcutPath, string targetPath, string arguments)

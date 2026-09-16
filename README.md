@@ -10,6 +10,7 @@ A private, local OBS overlay for *Heroes of the Storm*. It watches the game's `S
 - Regenerates the catalog when the game build changes.
 - Updates OBS live through Server-Sent Events—no browser polling or manual refresh.
 - Provides a complete dashboard in English and Spanish.
+- Checks GitHub for new releases and updates itself with one click from the dashboard.
 - Lets you personalize colors, borders, spacing, labels, and animations with a live preview.
 - Never uploads your BattleTag, matches, or talent choices.
 
@@ -22,6 +23,8 @@ A private, local OBS overlay for *Heroes of the Storm*. It watches the game's `S
 3. Follow the one-minute setup assistant to detect HotS and add the Browser Source to OBS.
 
 The installer adds Start menu and optional desktop/startup shortcuts. The app runs from the Windows tray and opens the dashboard automatically. No separate .NET installation is required. The portable ZIP remains available for users who prefer it.
+
+When a new release is available, the dashboard displays **New version available — Update and restart**. The app downloads the official GitHub installer, updates in place, and reopens automatically without deleting your settings.
 
 ### Build from source
 
@@ -125,6 +128,7 @@ Overlay privado y local para OBS y *Heroes of the Storm*. Vigila los archivos `S
 - Regenera el catálogo cuando cambia la build del juego.
 - Actualiza OBS mediante Server-Sent Events, sin polling ni recargas manuales.
 - Ofrece un panel completo en español e inglés.
+- Comprueba si hay nuevas versiones en GitHub y se actualiza con un clic desde el panel.
 - Permite personalizar colores, bordes, espaciado, textos y animaciones con vista previa en directo.
 - Nunca sube tu BattleTag, partidas o elecciones de talentos.
 
@@ -137,6 +141,8 @@ Overlay privado y local para OBS y *Heroes of the Storm*. Vigila los archivos `S
 3. Sigue el asistente de un minuto para detectar HotS y añadir la fuente Navegador a OBS.
 
 El instalador añade accesos directos al menú Inicio y, opcionalmente, al escritorio y al inicio de Windows. La aplicación vive en la bandeja del sistema y abre el panel automáticamente. No requiere instalar .NET. El ZIP portátil continúa disponible para quien lo prefiera.
+
+Cuando existe una nueva versión, el panel muestra **Nueva versión disponible — Actualizar y reiniciar**. La aplicación descarga el instalador oficial de GitHub, se actualiza sobre la instalación existente y vuelve a abrirse sin borrar tu configuración.
 
 ### Compilar desde el código fuente
 

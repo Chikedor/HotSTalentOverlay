@@ -18,6 +18,12 @@ public sealed class CoreTests : IDisposable
     [Fact]
     public void BuildInfoParserRejectsMalformedData() => Assert.Null(GameInstallationDetector.ParseVersion("not build info"));
 
+    [Theory]
+    [InlineData("v1.4.0", 1, 4, 0)]
+    [InlineData("1.5.0-beta.1", 1, 5, 0)]
+    public void ReleaseVersionParserReadsGitHubTags(string tag, int major, int minor, int build)
+        => Assert.Equal(new Version(major, minor, build), ReleaseVersionParser.Parse(tag));
+
     [Fact]
     public async Task CatalogImportUsesStableIdTierAndCopiesOnlyReferencedIcon()
     {

@@ -32,6 +32,7 @@ const i18n = {
     catalogDetail: '{heroes} héroes · {talents} talentos · build {build}', saved: 'Cambios guardados.', portRestart: 'Guardado. Reinicia la app para aplicar el nuevo puerto.',
     copied: 'URL copiada.', demoLoaded: 'Demo cargada.', catalogQueued: 'Regeneración iniciada.', matchReset: 'Partida reseteada.', defaultsPreview: 'Valores predeterminados cargados. Guarda para aplicarlos.',
     catalogReady: 'Listo', catalogExtracting: 'Extrayendo desde CASC…', catalogError: 'Error de extracción', catalogNoGame: 'HotS no detectado',
+    updateAvailable: 'Nueva versión disponible', updateRestart: 'Actualizar y reiniciar', updating: 'Descargando actualización…', updateVersion: 'Versión {current} → {latest}',
   },
   en: {
     skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview', setupTitle: 'Initial setup', firstSetup: 'FIRST-TIME SETUP', welcomeTitle: 'Let’s get everything ready', welcomeText: 'This takes about a minute. First, choose the interface language.', gameCheck: 'GAME CHECK', gameCheckTitle: 'Finding Heroes of the Storm', gameCheckText: 'We automatically check the game and match folder.', gameInstalled: 'Game installed', matchesFolder: 'Match folder', detected: 'Detected', notFound: 'Not found', continue: 'Continue', obsSetupTitle: 'Add it to OBS', obsSetupText: 'In OBS create a Browser Source, paste this URL and use a transparent canvas.', obsStep1: 'Add source', obsStep2: 'Choose Browser', obsStep3: 'Paste the URL', finishSetup: 'Finish setup', rerunSetup: 'Run setup again', setupDone: 'Setup complete.',
@@ -52,6 +53,7 @@ const i18n = {
     saved: 'Changes saved.', portRestart: 'Saved. Restart the app to apply the new port.', copied: 'URL copied.', demoLoaded: 'Demo loaded.',
     catalogQueued: 'Catalog regeneration started.', matchReset: 'Match reset.', defaultsPreview: 'Default values loaded. Save to apply them.',
     catalogReady: 'Ready', catalogExtracting: 'Extracting from CASC…', catalogError: 'Extraction error', catalogNoGame: 'HotS not detected',
+    updateAvailable: 'New version available', updateRestart: 'Update and restart', updating: 'Downloading update…', updateVersion: 'Version {current} → {latest}',
   },
 };
 
@@ -61,6 +63,7 @@ let language = 'es';
 let toastTimer;
 let styleDirty = false;
 let styleSaveTimer;
+let updateState;
 
 function t(key, values = {}) {
   let value = i18n[language]?.[key] ?? i18n.es[key] ?? key;
@@ -82,6 +85,17 @@ function applyLanguage(nextLanguage) {
   document.querySelectorAll('[data-i18n-title]').forEach(element => { element.title = t(element.dataset.i18nTitle); });
   if ($('#style-save-state')) setStyleDirty(styleDirty);
   if (appState) render(appState);
+  if (updateState) renderUpdate(updateState);
+}
+
+function renderUpdate(update) {
+  updateState = update;
+  const banner = $('#update-banner');
+  banner.hidden = !update?.available;
+  if (!update?.available) return;
+  $('#update-version').textContent = t('updateVersion', { current: update.currentVersion, latest: update.latestVersion });
+  const button = $('#install-update');
+  if (!button.disabled) button.textContent = t('updateRestart');
 }
 
 function translateCatalogStatus(value) {
@@ -255,13 +269,18 @@ async function saveConfig(next, successMessage = t('saved'), notify = true) {
 }
 
 async function load() {
-  const [status, config] = await Promise.all([fetch('/api/status').then(response => response.json()), fetch('/api/config').then(response => response.json())]);
+  const [status, config, update] = await Promise.all([
+    fetch('/api/status').then(response => response.json()),
+    fetch('/api/config').then(response => response.json()),
+    fetch('/api/update').then(response => response.json()).catch(() => null),
+  ]);
   configState = { ...config, overlayStyle: { ...defaultStyle, ...(config.overlayStyle || {}) } };
   applyLanguage(configState.uiLanguage);
   fillGeneralForm(configState);
   fillStyleForm(configState.overlayStyle);
   setStyleDirty(false);
   render(status);
+  renderUpdate(update);
   if (!configState.setupCompleted) showWizardStep(1);
 }
 
@@ -320,10 +339,18 @@ document.querySelectorAll('[data-preview-mode]').forEach(button => button.addEve
 $('#copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#obs-url').textContent); showToast(t('copied')); } catch (error) { showToast(error.message, true); } });
 $('#regenerate').addEventListener('click', async () => { try { await post('/api/catalog/regenerate'); showToast(t('catalogQueued')); } catch (error) { showToast(error.message, true); } });
 $('#reset').addEventListener('click', async () => { try { await post('/api/match/reset'); showToast(t('matchReset')); } catch (error) { showToast(error.message, true); } });
+$('#install-update').addEventListener('click', async event => {
+  const button = event.currentTarget;
+  setBusy(button, true);
+  button.textContent = t('updating');
+  try { await post('/api/update/install'); }
+  catch (error) { setBusy(button, false); button.textContent = t('updateRestart'); showToast(error.message, true); }
+});
 $('#overlay-preview').addEventListener('load', () => { previewStyle(); fitPreview(); });
 new ResizeObserver(fitPreview).observe($('.preview-stage'));
 
 load().catch(error => showToast(error.message, true));
+setInterval(() => fetch('/api/update').then(response => response.json()).then(renderUpdate).catch(() => {}), 60 * 60 * 1000);
 const events = new EventSource('/events');
 events.onmessage = event => {
   const next = JSON.parse(event.data);
