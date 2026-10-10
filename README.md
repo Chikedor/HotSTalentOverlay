@@ -73,6 +73,7 @@ Open the dashboard and use **Appearance** to tailor the overlay without editing 
 - Select how a new talent appears: fade, slide, pop, flip, or no animation.
 - Replay the selected appearance animation directly in the preview before saving.
 - Smoothly clears the previous talents when a new match is detected.
+- Clears the overlay when the final replay is saved; later saves from that match cannot restore it.
 - Show or hide the hero name, talent levels, and localized talent names.
 - Show unselected talent slots or hide them while keeping their space reserved.
 - Preview every change instantly; it is saved automatically for OBS and future sessions.
@@ -207,6 +208,7 @@ Abre el panel y usa **Apariencia** para adaptar el overlay sin editar CSS:
 - Selecciona cómo aparece un nuevo talento: fundido, deslizamiento, pop, giro o sin animación.
 - Reproduce la animación de aparición elegida directamente en la vista previa; los cambios se guardan automáticamente.
 - Vacía suavemente los talentos anteriores cuando detecta una partida nueva.
+- Vacía el overlay cuando se guarda la replay final; los guardados posteriores de esa partida no lo vuelven a llenar.
 - Muestra u oculta el nombre del héroe, los niveles y los nombres localizados de los talentos.
 - Muestra los huecos de talentos sin elegir u ocúltalos manteniendo reservado su espacio.
 - Previsualiza cada cambio al instante y guárdalo para OBS y las próximas sesiones.

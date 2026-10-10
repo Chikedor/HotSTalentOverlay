@@ -64,7 +64,10 @@ public sealed record ReplaySnapshot(
     string HeroName,
     IReadOnlyList<string> TalentIds,
     IReadOnlyList<double?> TalentTimes,
-    string ParseStatus);
+    string ParseStatus)
+{
+    public string PlayerIdentity { get; init; } = string.Empty;
+}
 
 public sealed record AppStatus
 {

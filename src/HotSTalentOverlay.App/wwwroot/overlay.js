@@ -105,7 +105,7 @@ function render(state) {
     };
   }
   const nextMatchId = state.matchId || '';
-  const isNewMatch = initialized && currentMatchId && nextMatchId && nextMatchId !== currentMatchId;
+  const isNewMatch = initialized && currentMatchId && nextMatchId !== currentMatchId;
   clearTimeout(transitionTimer);
   if (!isNewMatch) {
     renderState(state);
@@ -120,6 +120,7 @@ function render(state) {
     renderState(state, true);
     currentMatchId = nextMatchId;
     overlay.classList.remove('match-leaving');
+    if (!nextMatchId) return;
     void overlay.offsetWidth;
     overlay.classList.add('match-arriving');
     transitionTimer = setTimeout(() => overlay.classList.remove('match-arriving'), 500 * 100 / activeStyle.animationSpeed);

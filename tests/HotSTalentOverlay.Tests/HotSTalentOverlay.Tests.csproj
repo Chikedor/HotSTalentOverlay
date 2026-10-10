@@ -14,6 +14,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/HotSTalentOverlay.Core/HotSTalentOverlay.Core.csproj" />
+    <Compile Include="../../src/HotSTalentOverlay.App/RuntimeState.cs" Link="RuntimeState.cs" />
+    <Compile Include="../../src/HotSTalentOverlay.App/EventHub.cs" Link="EventHub.cs" />
   </ItemGroup>
 </Project>
 

@@ -9,6 +9,7 @@ public sealed class RuntimeState
     private readonly EventHub _events;
     private AppStatus _status = new();
     private ReplaySnapshot? _lastReplay;
+    private readonly HashSet<string> _completedMatches = new(StringComparer.Ordinal);
 
     public RuntimeState(TalentCatalog catalog, EventHub events)
     {
@@ -27,27 +28,43 @@ public sealed class RuntimeState
 
     public void ApplyReplay(ReplaySnapshot replay)
     {
-        lock (_gate) _lastReplay = replay;
-        List<DetectedTalent> talents = [];
-        for (int index = 0; index < replay.TalentIds.Count; index++)
+        lock (_gate)
         {
-            string id = replay.TalentIds[index];
-            TalentCatalogEntry? entry = _catalog.Find(id, replay.HeroUnitId);
-            int level = entry?.Level ?? StormReplaySnapshotReader.TalentTiers.ElementAtOrDefault(index);
-            talents.Add(new DetectedTalent(level, id, entry?.Name ?? id,
-                entry is null ? string.Empty : "/" + entry.Icon.Replace('\\', '/'),
-                index < replay.TalentTimes.Count ? replay.TalentTimes[index] : null));
-        }
+            if (_completedMatches.Contains(replay.MatchId)) return;
+            if (_lastReplay?.MatchId == replay.MatchId &&
+                (!string.Equals(_lastReplay.PlayerIdentity, replay.PlayerIdentity, StringComparison.Ordinal) ||
+                 !string.Equals(_lastReplay.HeroUnitId, replay.HeroUnitId, StringComparison.Ordinal))) return;
+            _lastReplay = replay;
+            List<DetectedTalent> talents = [];
+            for (int index = 0; index < replay.TalentIds.Count; index++)
+            {
+                string id = replay.TalentIds[index];
+                TalentCatalogEntry? entry = _catalog.Find(id, replay.HeroUnitId);
+                int level = entry?.Level ?? StormReplaySnapshotReader.TalentTiers.ElementAtOrDefault(index);
+                talents.Add(new DetectedTalent(level, id, entry?.Name ?? id,
+                    entry is null ? string.Empty : "/" + entry.Icon.Replace('\\', '/'),
+                    index < replay.TalentTimes.Count ? replay.TalentTimes[index] : null));
+            }
 
-        Update(status => status with
+            Update(status => status with
+            {
+                MatchId = replay.MatchId,
+                Player = replay.Player,
+                HeroUnitId = replay.HeroUnitId,
+                HeroName = _catalog.HeroName(replay.HeroUnitId) ?? replay.HeroName,
+                Talents = talents.OrderBy(x => x.Level).ToArray(),
+                LastError = string.Empty,
+            });
+        }
+    }
+
+    public void CompleteMatch(string matchId)
+    {
+        lock (_gate)
         {
-            MatchId = replay.MatchId,
-            Player = replay.Player,
-            HeroUnitId = replay.HeroUnitId,
-            HeroName = _catalog.HeroName(replay.HeroUnitId) ?? replay.HeroName,
-            Talents = talents.OrderBy(x => x.Level).ToArray(),
-            LastError = string.Empty,
-        });
+            _completedMatches.Add(matchId);
+            if (_status.MatchId == matchId) ResetMatch();
+        }
     }
 
     public void RefreshCatalog()
