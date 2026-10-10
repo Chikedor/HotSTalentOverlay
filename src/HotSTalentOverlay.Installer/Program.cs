@@ -122,7 +122,7 @@ internal static class Program
     {
         using RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\HotSTalentOverlay");
         key.SetValue("DisplayName", AppName);
-        key.SetValue("DisplayVersion", "1.4.0");
+        key.SetValue("DisplayVersion", Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0");
         key.SetValue("Publisher", "Chikedor");
         key.SetValue("InstallLocation", InstallDirectory);
         key.SetValue("DisplayIcon", appPath);
@@ -138,7 +138,12 @@ internal static class Program
             try
             {
                 using Process process = Process.GetProcessById(processId);
-                if (!process.WaitForExit(30_000)) throw new TimeoutException("La aplicación no se cerró a tiempo / The application did not close in time.");
+                if (!process.WaitForExit(20_000))
+                {
+                    // The app asked for this update and is about to be replaced: force it closed instead of failing.
+                    process.Kill(true);
+                    if (!process.WaitForExit(10_000)) throw new TimeoutException("La aplicación no se cerró a tiempo / The application did not close in time.");
+                }
             }
             catch (ArgumentException) { }
 
