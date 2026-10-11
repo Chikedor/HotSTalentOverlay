@@ -6,14 +6,18 @@ const fallbackStyle = {
   accentColor: '#b9a8ff', borderColor: '#7869b3', backgroundColor: '#11101c', textColor: '#ffffff',
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
   showHero: true, showLevels: true, showTalentNames: false, showEmptySlots: true,
-  entryAnimation: 'slide', animationSpeed: 100,
+  entryAnimation: 'slide', animationSpeed: 100, exitAnimation: 'fade', exitDurationMs: 450,
 };
 let activeStyle = fallbackStyle;
 let initialized = false;
 let currentMatchId = '';
 let transitionTimer;
 let lastState;
-let previewMode = 'filled';
+let previewMode = 'live';
+let previewSample;
+let previewTimer;
+let testingExit = false;
+let pendingState;
 
 for (const level of tiers) {
   const slot = document.createElement('div');
@@ -39,6 +43,8 @@ function applyStyle(style) {
   root.setProperty('--border-radius', `${activeStyle.borderRadius}px`);
   root.setProperty('--border-style', activeStyle.borderStyle);
   root.setProperty('--entry-duration', `${0.45 * 100 / activeStyle.animationSpeed}s`);
+  root.setProperty('--exit-duration', `${activeStyle.exitDurationMs}ms`);
+  overlay.dataset.exitAnimation = activeStyle.exitAnimation;
   hero.hidden = !activeStyle.showHero;
   for (const slot of slots.children) {
     slot.querySelector('.level').hidden = !activeStyle.showLevels;
@@ -94,30 +100,49 @@ function replayEntryAnimation() {
   targets.forEach((slot, index) => setTimeout(() => slot.classList.add(`entry-${animation}`), index * 45));
 }
 
-function render(state) {
-  lastState = state;
+function previewState(state) {
   if (new URLSearchParams(location.search).has('preview')) {
-    if (previewMode === 'empty') state = { ...state, heroName: '', talents: [] };
-    else if (!(state.talents || []).length) state = {
-      ...state,
-      heroName: state.heroName || 'Valla',
-      talents: tiers.map(level => ({ level, talentTreeId: `preview-${level}`, name: state.uiLanguage === 'en' ? `Talent ${level}` : `Talento ${level}` })),
-    };
+    if (previewMode === 'empty') return { ...state, matchId: '', heroName: '', talents: [] };
+    if (previewMode === 'filled' && previewSample) return { ...state, ...previewSample, overlayStyle: state.overlayStyle, uiLanguage: state.uiLanguage };
   }
+  return state;
+}
+
+function render(state) {
+  const previousStyle = lastState?.overlayStyle;
+  lastState = state;
+  if (testingExit) {
+    if (JSON.stringify(state.overlayStyle) !== JSON.stringify(previousStyle)) applyStyle(state.overlayStyle);
+    return;
+  }
+  state = previewState(state);
   const nextMatchId = state.matchId || '';
+  if (pendingState && (pendingState.matchId || '') === nextMatchId) {
+    pendingState = state;
+    return;
+  }
   const isNewMatch = initialized && currentMatchId && nextMatchId !== currentMatchId;
   clearTimeout(transitionTimer);
+  pendingState = undefined;
+  overlay.classList.remove('match-leaving', 'match-arriving');
   if (!isNewMatch) {
     renderState(state);
     currentMatchId = nextMatchId;
     return;
   }
 
-  overlay.classList.remove('match-arriving');
-  overlay.classList.add('match-leaving');
-  const delay = 325 * 100 / activeStyle.animationSpeed;
-  transitionTimer = setTimeout(() => {
+  if (activeStyle.exitAnimation === 'none') {
     renderState(state, true);
+    currentMatchId = nextMatchId;
+    return;
+  }
+  void overlay.offsetWidth;
+  overlay.classList.add('match-leaving');
+  pendingState = state;
+  const delay = activeStyle.exitDurationMs;
+  transitionTimer = setTimeout(() => {
+    renderState(pendingState, true);
+    pendingState = undefined;
     currentMatchId = nextMatchId;
     overlay.classList.remove('match-leaving');
     if (!nextMatchId) return;
@@ -127,12 +152,40 @@ function render(state) {
   }, delay);
 }
 
+function replayExitAnimation(sample) {
+  if (!lastState || activeStyle.exitAnimation === 'none') return;
+  clearTimeout(transitionTimer);
+  pendingState = undefined;
+  clearTimeout(previewTimer);
+  testingExit = true;
+  const style = activeStyle;
+  const shown = previewState(lastState);
+  renderState({ ...shown, ...((shown.talents || []).length ? {} : sample), overlayStyle: style }, true);
+  overlay.classList.remove('match-leaving', 'match-arriving');
+  void overlay.offsetWidth;
+  overlay.classList.add('match-leaving');
+  previewTimer = setTimeout(() => {
+    renderState({ ...lastState, heroName: '', talents: [], overlayStyle: activeStyle }, true);
+    overlay.classList.remove('match-leaving');
+    previewTimer = setTimeout(() => {
+      testingExit = false;
+      const restored = previewState(lastState);
+      renderState({ ...restored, overlayStyle: activeStyle }, true);
+      currentMatchId = restored.matchId || '';
+    }, 300);
+  }, style.exitDurationMs);
+}
+
 window.addEventListener('message', event => {
   if (event.origin !== location.origin) return;
   if (event.data?.type === 'overlay-style-preview') applyStyle(event.data.style);
   if (event.data?.type === 'overlay-entry-preview') replayEntryAnimation();
+  if (event.data?.type === 'overlay-exit-preview' && new URLSearchParams(location.search).has('preview')) replayExitAnimation(event.data.sample);
   if (event.data?.type === 'overlay-preview-mode') {
-    previewMode = event.data.mode === 'empty' ? 'empty' : 'filled';
+    clearTimeout(previewTimer);
+    testingExit = false;
+    previewSample = event.data.sample;
+    previewMode = ['live', 'empty', 'filled'].includes(event.data.mode) ? event.data.mode : 'live';
     if (lastState) render(lastState);
   }
 });

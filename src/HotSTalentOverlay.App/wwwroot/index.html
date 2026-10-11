@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>HotS Talent Overlay</title>
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="app.css?v=1.4.5">
 </head>
 <body>
   <a class="skip-link" href="#content" data-i18n="skip">Saltar al contenido</a>
@@ -116,6 +116,9 @@
               <label><span data-i18n="iconSize">Tamaño</span><span class="range-row"><input id="iconSize" type="range" min="40" max="160" step="2"><output for="iconSize"></output></span></label>
               <label><span data-i18n="entryAnimation">Al aparecer</span><select id="entryAnimation"><option value="none" data-i18n="none">Ninguna</option><option value="fade" data-i18n="fade">Fundido</option><option value="slide" data-i18n="slide">Deslizamiento</option><option value="pop" data-i18n="pop">Salto</option><option value="flip" data-i18n="flip">Giro</option></select></label>
               <div id="previewAnimationControl" class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto</span><button id="previewEntry" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewAnimation">Probar aparición</span></button></div>
+              <label><span data-i18n="exitAnimation">Al terminar la partida</span><select id="exitAnimation"><option value="none" data-i18n="none">Ninguno</option><option value="fade" data-i18n="fade">Fundido</option><option value="up" data-i18n="up">Hacia arriba</option><option value="down" data-i18n="down">Hacia abajo</option><option value="left" data-i18n="left">Hacia la izquierda</option><option value="right" data-i18n="right">Hacia la derecha</option></select></label>
+              <div id="previewExitControl" class="preview-animation-control"><span data-i18n="previewAnimationHelp">Comprueba el efecto sin guardar</span><button id="previewExit" class="button secondary" type="button"><span aria-hidden="true">▶</span><span data-i18n="previewExit">Probar salida</span></button></div>
+              <label id="exitDurationControl" class="wide-control"><span data-i18n="exitDuration">Duración de salida</span><span class="range-row"><input id="exitDurationMs" type="range" min="100" max="2000" step="50"><output for="exitDurationMs"></output></span></label>
             </div>
             <div class="switch-grid essential-switches">
               <label class="switch"><input id="showLevels" type="checkbox"><span aria-hidden="true"></span><b data-i18n="showLevels">Mostrar niveles</b></label>
@@ -153,8 +156,9 @@
 
       <aside class="preview-column">
         <section class="panel preview-panel">
-          <div class="section-heading"><div><span class="eyebrow" data-i18n="livePreview">PREVIEW EN DIRECTO</span><h2 data-i18n="obsResult">Así se verá en OBS</h2></div><span class="live-dot"><i></i><span data-i18n="live">En vivo</span></span></div>
-          <div class="preview-mode" role="group" data-i18n-aria="previewMode"><button class="active" type="button" data-preview-mode="filled" data-i18n="withTalents">Con talentos</button><button type="button" data-preview-mode="empty" data-i18n="withoutTalents">Sin talentos</button></div>
+          <div class="section-heading"><div><span class="eyebrow" data-i18n="livePreview">PREVIEW EN DIRECTO</span><h2 data-i18n="obsResult">Así se verá en OBS</h2></div><span class="live-dot"><i></i><span id="preview-mode-label">En vivo</span></span></div>
+          <div class="preview-mode" role="group" data-i18n-aria="previewMode"><button class="active" aria-pressed="true" type="button" data-preview-mode="live" data-i18n="live">En vivo</button><button aria-pressed="false" type="button" data-preview-mode="filled" data-i18n="withTalents">Con talentos</button><button aria-pressed="false" type="button" data-preview-mode="empty" data-i18n="withoutTalents">Sin talentos</button></div>
+          <p class="muted" data-i18n="previewHelp">Las simulaciones solo afectan a esta vista, nunca a OBS.</p>
           <div class="preview-stage"><iframe id="overlay-preview" src="/overlay.html?preview=1" data-i18n-title="overlayPreview" title="Preview del overlay"></iframe></div>
         </section>
 
@@ -182,7 +186,7 @@
     <section id="error" class="error" role="alert" hidden></section>
     <footer><span data-i18n="privacyFooter">100 % local · Sin telemetría · Tus partidas no salen de este equipo</span></footer>
   </main>
-  <script src="status-polling.js?v=1.4.4"></script>
-  <script src="app.js?v=1.4.4"></script>
+  <script src="status-polling.js?v=1.4.5"></script>
+  <script src="app.js?v=1.4.5"></script>
 </body>
 </html>

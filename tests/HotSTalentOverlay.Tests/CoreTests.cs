@@ -84,6 +84,36 @@ public sealed class CoreTests : IDisposable
     }
 
     [Fact]
+    public async Task ExitSettingsSurviveSavingAndLegacyStylesGetFadeDefaults()
+    {
+        AppPaths paths = new(Path.Combine(_root, "exit-state"));
+        await File.WriteAllTextAsync(paths.ConfigFile, """{"overlayStyle":{"entryAnimation":"pop","showEmptySlots":false}}""", TestContext.Current.CancellationToken);
+        ConfigStore store = new(paths);
+        JsonElement legacy = JsonSerializer.SerializeToElement(store.Current, JsonOptions.Default).GetProperty("overlayStyle");
+        Assert.True(legacy.TryGetProperty("exitAnimation", out JsonElement animation));
+        Assert.Equal("fade", animation.GetString());
+        Assert.Equal(450, legacy.GetProperty("exitDurationMs").GetInt32());
+        Assert.False(store.Current.OverlayStyle.ShowEmptySlots);
+        AppConfig changed = JsonSerializer.Deserialize<AppConfig>("""{"overlayStyle":{"exitAnimation":"right","exitDurationMs":1200}}""", JsonOptions.Default)!;
+        await store.SaveAsync(changed, TestContext.Current.CancellationToken);
+        JsonElement saved = JsonSerializer.SerializeToElement(new ConfigStore(paths).Current, JsonOptions.Default).GetProperty("overlayStyle");
+        Assert.Equal("right", saved.GetProperty("exitAnimation").GetString());
+        Assert.Equal(1200, saved.GetProperty("exitDurationMs").GetInt32());
+    }
+
+    [Theory]
+    [InlineData("breathing", 450)]
+    [InlineData("fade", 0)]
+    [InlineData("fade", 2001)]
+    public async Task InvalidExitSettingsAreRejected(string animation, int duration)
+    {
+        ConfigStore store = new(new AppPaths(Path.Combine(_root, "invalid-exit")));
+        string json = JsonSerializer.Serialize(new { overlayStyle = new { exitAnimation = animation, exitDurationMs = duration } });
+        AppConfig invalid = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions.Default)!;
+        await Assert.ThrowsAnyAsync<ArgumentException>(() => store.SaveAsync(invalid, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
     public async Task SnapshotCopyCanReadSourceSharedForWriting()
     {
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;

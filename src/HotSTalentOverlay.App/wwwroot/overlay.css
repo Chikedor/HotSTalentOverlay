@@ -10,6 +10,7 @@
   --border-radius: 10px;
   --border-style: solid;
   --entry-duration: .45s;
+  --exit-duration: 450ms;
 }
 
 * { box-sizing: border-box; }
@@ -41,12 +42,20 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background:
 .entry-slide { animation: talent-slide var(--entry-duration) cubic-bezier(.16,1,.3,1) both; }
 .entry-pop { animation: talent-pop var(--entry-duration) cubic-bezier(.18,1.55,.4,1) both; }
 .entry-flip { animation: talent-flip var(--entry-duration) cubic-bezier(.2,.8,.2,1) both; }
-#overlay.match-leaving { animation: match-leave calc(var(--entry-duration) * .72) cubic-bezier(.4,0,1,1) both; }
+#overlay.match-leaving { animation: match-fade var(--exit-duration) ease-in both; }
+#overlay.match-leaving[data-exit-animation="up"] { animation-name: match-up; }
+#overlay.match-leaving[data-exit-animation="down"] { animation-name: match-down; }
+#overlay.match-leaving[data-exit-animation="left"] { animation-name: match-left; }
+#overlay.match-leaving[data-exit-animation="right"] { animation-name: match-right; }
 #overlay.match-arriving { animation: match-arrive var(--entry-duration) cubic-bezier(.16,1,.3,1) both; }
 
 @keyframes talent-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes talent-slide { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes talent-pop { 0% { opacity: 0; transform: scale(.55); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes talent-flip { from { opacity: 0; transform: perspective(320px) rotateY(-85deg); } to { opacity: 1; transform: perspective(320px) rotateY(0); } }
-@keyframes match-leave { to { opacity: 0; transform: translateY(-12px) scale(.97); filter: blur(3px) drop-shadow(0 3px 8px #000c); } }
+@keyframes match-fade { to { opacity: 0; } }
+@keyframes match-up { to { opacity: 0; transform: translateY(-24px); } }
+@keyframes match-down { to { opacity: 0; transform: translateY(24px); } }
+@keyframes match-left { to { opacity: 0; transform: translateX(-24px); } }
+@keyframes match-right { to { opacity: 0; transform: translateX(24px); } }
 @keyframes match-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }

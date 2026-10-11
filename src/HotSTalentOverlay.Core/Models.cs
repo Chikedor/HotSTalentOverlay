@@ -29,6 +29,8 @@ public sealed record OverlayStyleConfig
     public bool ShowEmptySlots { get; init; } = true;
     public string EntryAnimation { get; init; } = "slide";
     public int AnimationSpeed { get; init; } = 100;
+    public string ExitAnimation { get; init; } = "fade";
+    public int ExitDurationMs { get; init; } = 450;
 }
 
 public sealed record TalentCatalogEntry(

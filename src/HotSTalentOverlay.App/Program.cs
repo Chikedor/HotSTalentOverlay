@@ -47,6 +47,19 @@ app.MapGet("/api/status", (RuntimeState state, ConfigStore config) => Results.Ok
     OverlayStyle = config.Current.OverlayStyle,
 }));
 app.MapGet("/api/config", (ConfigStore config) => Results.Ok(config.Current));
+// Read-only simulation: preview controls must never replace the match shown in OBS.
+app.MapGet("/api/preview", (TalentCatalog catalog) =>
+{
+    TalentCatalogEntry[] sample = catalog.Document?.Talents
+        .Where(x => x.Hero.Equals("Valla", StringComparison.OrdinalIgnoreCase))
+        .OrderBy(x => x.Level).GroupBy(x => x.Level).Select(x => x.First()).ToArray() ?? [];
+    return Results.Ok(new AppStatus
+    {
+        MatchId = "preview", HeroName = sample.FirstOrDefault()?.Hero ?? string.Empty,
+        CatalogBuild = catalog.Document?.Build ?? 0,
+        Talents = sample.Select(x => new DetectedTalent(x.Level, x.TalentTreeId, x.Name, "/" + x.Icon.Replace('\\', '/'), null)).ToArray(),
+    });
+});
 app.MapGet("/api/update", (UpdateService updates, CancellationToken ct) => updates.CheckAsync(false, ct));
 app.MapPost("/api/update/install", async (UpdateService updates, CancellationToken ct) =>
 {

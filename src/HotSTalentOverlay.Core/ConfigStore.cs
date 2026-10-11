@@ -69,10 +69,12 @@ public sealed class ConfigStore
             if (string.IsNullOrWhiteSpace(color) || !Regex.IsMatch(color, "^#[0-9a-fA-F]{6}$"))
                 throw new ArgumentException("Los colores deben usar el formato #RRGGBB.", nameof(config));
         if (style.BorderWidth is < 0 or > 8 || style.BorderRadius is < 0 or > 32 ||
-            style.IconSize is < 40 or > 160 || style.Gap is < 0 or > 40 || style.AnimationSpeed is < 50 or > 200)
+            style.IconSize is < 40 or > 160 || style.Gap is < 0 or > 40 || style.AnimationSpeed is < 50 or > 200 ||
+            style.ExitDurationMs is < 100 or > 2000)
             throw new ArgumentOutOfRangeException(nameof(config), "La configuración visual está fuera del rango permitido.");
         if (style.BorderStyle is not ("solid" or "double" or "dashed" or "none") ||
-            style.EntryAnimation is not ("none" or "fade" or "slide" or "pop" or "flip"))
+            style.EntryAnimation is not ("none" or "fade" or "slide" or "pop" or "flip") ||
+            style.ExitAnimation is not ("none" or "fade" or "up" or "down" or "left" or "right"))
             throw new ArgumentException("La animación o el estilo de borde no es válido.", nameof(config));
     }
 }

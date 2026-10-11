@@ -4,7 +4,7 @@ const defaultStyle = {
   accentColor: '#b9a8ff', borderColor: '#7869b3', backgroundColor: '#11101c', textColor: '#ffffff',
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
   showHero: true, showLevels: true, showTalentNames: false, showEmptySlots: true,
-  entryAnimation: 'slide', animationSpeed: 100,
+  entryAnimation: 'slide', animationSpeed: 100, exitAnimation: 'fade', exitDurationMs: 450,
 };
 const presets = {
   classic: { ...defaultStyle },
@@ -14,6 +14,7 @@ const presets = {
 };
 const i18n = {
   es: {
+    exitAnimation: 'Al terminar la partida', exitDuration: 'Duración de salida', previewExit: 'Probar salida', up: 'Hacia arriba', down: 'Hacia abajo', left: 'Hacia la izquierda', right: 'Hacia la derecha', simulation: 'Simulación', previewHelp: 'Las simulaciones solo afectan a esta vista, nunca a OBS.',
     skip: 'Saltar al contenido', localControl: 'CONTROL LOCAL', tagline: 'Tus talentos en OBS, automáticamente y sin salir de tu PC.', language: 'Idioma', interfaceLanguage: 'Idioma de la interfaz', status: 'Estado', overlayPreview: 'Preview del overlay', setupTitle: 'Configuración inicial', firstSetup: 'PRIMERA CONFIGURACIÓN', welcomeTitle: 'Vamos a dejarlo preparado', welcomeText: 'Solo tardaremos un minuto. Primero, elige el idioma de la interfaz.', gameCheck: 'COMPROBACIÓN DEL JUEGO', gameCheckTitle: 'Buscando Heroes of the Storm', gameCheckText: 'Comprobamos automáticamente el juego y la carpeta de partidas.', gameInstalled: 'Juego instalado', matchesFolder: 'Carpeta de partidas', detected: 'Detectado', notFound: 'No encontrado', continue: 'Continuar', obsSetupTitle: 'Añádelo a OBS', obsSetupText: 'En OBS crea una Fuente de navegador, pega esta URL y usa un lienzo transparente.', obsStep1: 'Añadir fuente', obsStep2: 'Elegir Navegador', obsStep3: 'Pegar la URL', finishSetup: 'Terminar configuración', rerunSetup: 'Repetir asistente', setupDone: 'Configuración terminada.',
     localCatalog: 'CATÁLOGO LOCAL', liveDetector: 'DETECTOR EN DIRECTO', currentMatch: 'PARTIDA ACTUAL', appearance: 'APARIENCIA',
     customizeOverlay: 'Personaliza tus talentos', restoreDefaults: 'Restaurar', appearanceHelp: 'Elige un estilo y ajústalo. Los cambios se guardan automáticamente.',
@@ -35,6 +36,7 @@ const i18n = {
     updateAvailable: 'Nueva versión disponible', updateRestart: 'Actualizar y reiniciar', updating: 'Descargando actualización…', updateVersion: 'Versión {current} → {latest}',
   },
   en: {
+    exitAnimation: 'When the match ends', exitDuration: 'Exit duration', previewExit: 'Preview exit', up: 'Slide up', down: 'Slide down', left: 'Slide left', right: 'Slide right', simulation: 'Simulation', previewHelp: 'Simulations only affect this preview, never OBS.',
     skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview', setupTitle: 'Initial setup', firstSetup: 'FIRST-TIME SETUP', welcomeTitle: 'Let’s get everything ready', welcomeText: 'This takes about a minute. First, choose the interface language.', gameCheck: 'GAME CHECK', gameCheckTitle: 'Finding Heroes of the Storm', gameCheckText: 'We automatically check the game and match folder.', gameInstalled: 'Game installed', matchesFolder: 'Match folder', detected: 'Detected', notFound: 'Not found', continue: 'Continue', obsSetupTitle: 'Add it to OBS', obsSetupText: 'In OBS create a Browser Source, paste this URL and use a transparent canvas.', obsStep1: 'Add source', obsStep2: 'Choose Browser', obsStep3: 'Paste the URL', finishSetup: 'Finish setup', rerunSetup: 'Run setup again', setupDone: 'Setup complete.',
     localCatalog: 'LOCAL CATALOG', liveDetector: 'LIVE DETECTOR', currentMatch: 'CURRENT MATCH', appearance: 'APPEARANCE',
     customizeOverlay: 'Customize your talents', restoreDefaults: 'Restore', appearanceHelp: 'Choose a style and adjust it. Changes save automatically.',
@@ -64,6 +66,9 @@ let toastTimer;
 let styleDirty = false;
 let styleSaveTimer;
 let updateState;
+let selectedPreviewMode = 'live';
+let sampleState;
+let previewRequest = 0;
 
 function t(key, values = {}) {
   let value = i18n[language]?.[key] ?? i18n.es[key] ?? key;
@@ -86,6 +91,7 @@ function applyLanguage(nextLanguage) {
   if ($('#style-save-state')) setStyleDirty(styleDirty);
   if (appState) render(appState);
   if (updateState) renderUpdate(updateState);
+  $('#preview-mode-label').textContent = t(selectedPreviewMode === 'live' ? 'live' : 'simulation');
 }
 
 function renderUpdate(update) {
@@ -184,7 +190,7 @@ function updateWizardStatus() {
 
 function fillStyleForm(style) {
   const resolved = { ...defaultStyle, ...(style || {}) };
-  for (const key of ['accentColor', 'borderColor', 'backgroundColor', 'textColor', 'borderWidth', 'borderRadius', 'borderStyle', 'iconSize', 'gap', 'entryAnimation', 'animationSpeed']) {
+  for (const key of ['accentColor', 'borderColor', 'backgroundColor', 'textColor', 'borderWidth', 'borderRadius', 'borderStyle', 'iconSize', 'gap', 'entryAnimation', 'animationSpeed', 'exitAnimation', 'exitDurationMs']) {
     $(`#${key}`).value = resolved[key];
   }
   for (const key of ['showHero', 'showLevels', 'showTalentNames', 'showEmptySlots']) $(`#${key}`).checked = resolved[key];
@@ -200,6 +206,7 @@ function readStyleForm() {
     iconSize: Number($('#iconSize').value), gap: Number($('#gap').value), showHero: $('#showHero').checked,
     showLevels: $('#showLevels').checked, showTalentNames: $('#showTalentNames').checked, showEmptySlots: $('#showEmptySlots').checked,
     entryAnimation: $('#entryAnimation').value, animationSpeed: Number($('#animationSpeed').value),
+    exitAnimation: $('#exitAnimation').value, exitDurationMs: Number($('#exitDurationMs').value),
   };
 }
 
@@ -207,6 +214,7 @@ function updateOutputs() {
   for (const id of ['accentColor', 'borderColor', 'backgroundColor', 'textColor']) $(`output[for="${id}"]`).textContent = $(`#${id}`).value;
   for (const id of ['iconSize', 'borderWidth', 'borderRadius', 'gap']) $(`output[for="${id}"]`).textContent = `${$(`#${id}`).value}px`;
   $('output[for="animationSpeed"]').textContent = `${$('#animationSpeed').value}%`;
+  $('output[for="exitDurationMs"]').textContent = `${$('#exitDurationMs').value} ms`;
 }
 
 function setStyleDirty(dirty) {
@@ -243,6 +251,11 @@ function updateDependentControls() {
   $('#previewEntry').disabled = animationDisabled;
   $('#animationSpeedControl').classList.toggle('control-disabled', animationDisabled);
   $('#previewAnimationControl').classList.toggle('control-disabled', animationDisabled);
+  const exitDisabled = $('#exitAnimation').value === 'none';
+  $('#exitDurationMs').disabled = exitDisabled;
+  $('#previewExit').disabled = exitDisabled;
+  $('#exitDurationControl').classList.toggle('control-disabled', exitDisabled);
+  $('#previewExitControl').classList.toggle('control-disabled', exitDisabled);
 }
 
 function previewStyle() {
@@ -332,9 +345,40 @@ $('#previewEntry').addEventListener('click', () => {
   previewStyle();
   $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-entry-preview' }, location.origin);
 });
-document.querySelectorAll('[data-preview-mode]').forEach(button => button.addEventListener('click', () => {
-  document.querySelectorAll('[data-preview-mode]').forEach(item => item.classList.toggle('active', item === button));
-  $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-preview-mode', mode: button.dataset.previewMode }, location.origin);
+async function getPreviewSample() {
+  if (!sampleState?.talents?.length) {
+    const response = await fetch('/api/preview');
+    if (!response.ok) throw new Error(t('notDetected'));
+    sampleState = await response.json();
+  }
+  return sampleState;
+}
+
+function sendPreviewMode() {
+  $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-preview-mode', mode: selectedPreviewMode, sample: sampleState }, location.origin);
+  $('#preview-mode-label').textContent = t(selectedPreviewMode === 'live' ? 'live' : 'simulation');
+  document.querySelectorAll('[data-preview-mode]').forEach(item => {
+    const selected = item.dataset.previewMode === selectedPreviewMode;
+    item.classList.toggle('active', selected);
+    item.setAttribute('aria-pressed', String(selected));
+  });
+}
+
+$('#previewExit').addEventListener('click', async () => {
+  try {
+    const sample = await getPreviewSample();
+    previewStyle();
+    $('#overlay-preview').contentWindow?.postMessage({ type: 'overlay-exit-preview', sample }, location.origin);
+  } catch (error) { showToast(error.message, true); }
+});
+document.querySelectorAll('[data-preview-mode]').forEach(button => button.addEventListener('click', async () => {
+  const request = ++previewRequest;
+  try {
+    if (button.dataset.previewMode === 'filled') await getPreviewSample();
+    if (request !== previewRequest) return;
+    selectedPreviewMode = button.dataset.previewMode;
+    sendPreviewMode();
+  } catch (error) { showToast(error.message, true); }
 }));
 $('#copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#obs-url').textContent); showToast(t('copied')); } catch (error) { showToast(error.message, true); } });
 $('#regenerate').addEventListener('click', async () => { try { await post('/api/catalog/regenerate'); showToast(t('catalogQueued')); } catch (error) { showToast(error.message, true); } });
@@ -346,7 +390,7 @@ $('#install-update').addEventListener('click', async event => {
   try { await post('/api/update/install'); }
   catch (error) { setBusy(button, false); button.textContent = t('updateRestart'); showToast(error.message, true); }
 });
-$('#overlay-preview').addEventListener('load', () => { previewStyle(); fitPreview(); });
+$('#overlay-preview').addEventListener('load', () => { previewStyle(); sendPreviewMode(); fitPreview(); });
 new ResizeObserver(fitPreview).observe($('.preview-stage'));
 
 load().catch(error => showToast(error.message, true)).finally(() => watchStatus(next => {
