@@ -11,21 +11,21 @@ Accounts/**/Saves/Rejoin/*.StormSave
   └─ FileSystemWatcher ──> debounce ──> espera/reintento ──> copia temporal
        └─ Heroes.StormReplayParser 2.2.1
             └─ jugador local ──> HeroTalent.TalentNameId ──> catálogo
-                 └─ RuntimeState ──> SSE ──> overlay.html ──> OBS
+                 └─ RuntimeState ──> /api/status ──> overlay.html ──> OBS
                                       └─ preferencias visuales ──> variables CSS
 ```
 
 ## Decisiones
 
 - Una sola aplicación web ASP.NET Core enlazada exclusivamente a `127.0.0.1`. La UI de control y el overlay comparten proceso y estado.
-- SSE en lugar de WebSocket: flujo unidireccional, reconexión nativa del navegador y menos protocolo.
+- Panel y overlay consultan `/api/status` cada segundo, con una sola petición en curso y timeout de 5 segundos. Esto libera las conexiones HTTP/1.1 para las imágenes incluso con varias pestañas. Los estados idénticos no se vuelven a dibujar. `/events` conserva compatibilidad con pestañas antiguas enviando un solo estado y cerrando la respuesta; el cliente antiguo reconecta al segundo.
 - IDs internos (`talentId` / `TalentNameId`) como clave. Los nombres localizados sólo se muestran.
 - El propietario del replay es la primera opción para jugador local; después se compara el `ToonHandle` con el segmento de ruta `2-Hero-1-...`; BattleTag es fallback.
 - Cada evento de filesystem reconstruye una foto completa de los talentos del jugador y reemplaza el estado. Esto hace la operación idempotente ante eventos duplicados y evita depender del orden de notificaciones.
 - Antes de parsear se espera estabilidad de tamaño y se copia con `FileShare.ReadWrite|Delete`. Nunca se abre HotS para escritura.
 - El nuevo catálogo se genera en staging. Sólo sustituye datos/iconos tras validar que todos los PNG referenciados existen; ante fallo se restaura el anterior.
 - La versión se obtiene de `.build.info`; si difiere de `CatalogDocument.Build`, se regenera automáticamente.
-- El idioma de la interfaz y las preferencias visuales se guardan en `config.json`, se validan en el backend y se propagan por SSE. La vista previa del panel usa el mismo overlay que OBS y aplica los cambios sin guardar mediante `postMessage`.
+- El idioma de la interfaz y las preferencias visuales se guardan en `config.json`, se validan en el backend y se propagan mediante las consultas de estado. La vista previa del panel usa el mismo overlay que OBS y aplica los cambios sin guardar mediante `postMessage`.
 
 ## Estado del ecosistema (verificado el 14-09-2026)
 

@@ -93,24 +93,14 @@ app.MapPost("/api/replay/test", async (HttpRequest request, LiveWatcherService w
     watcher.ProcessFile(path);
     return Results.Accepted();
 });
-app.MapGet("/events", async (HttpContext context, EventHub hub, RuntimeState state, IHostApplicationLifetime lifetime) =>
+app.MapGet("/events", async (HttpContext context, RuntimeState state) =>
 {
-    // Open SSE streams (dashboard, OBS) must end when the app stops, or Kestrel waits for them and the updater times out.
-    using CancellationTokenSource stream = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted, lifetime.ApplicationStopping);
+    // Compatibility for tabs opened before 1.4.4: send one snapshot and release
+    // the connection. EventSource reconnects after one second instead of holding
+    // all six HTTP/1.1 browser connections and starving talent image requests.
     context.Response.Headers.CacheControl = "no-cache";
-    context.Response.Headers.Connection = "keep-alive";
     context.Response.ContentType = "text/event-stream";
-    try
-    {
-        await context.Response.WriteAsync($"data: {JsonSerializer.Serialize(state.Snapshot, JsonOptions.Default)}\n\n", stream.Token);
-        await context.Response.Body.FlushAsync(stream.Token);
-        await foreach (string json in hub.Subscribe(stream.Token))
-        {
-            await context.Response.WriteAsync($"data: {json}\n\n", stream.Token);
-            await context.Response.Body.FlushAsync(stream.Token);
-        }
-    }
-    catch (OperationCanceledException) { }
+    await context.Response.WriteAsync($"retry: 1000\ndata: {JsonSerializer.Serialize(state.Snapshot, JsonOptions.Default)}\n\n", context.RequestAborted);
 });
 
 bool openBrowserOnStart = !args.Contains("--background", StringComparer.OrdinalIgnoreCase) &&

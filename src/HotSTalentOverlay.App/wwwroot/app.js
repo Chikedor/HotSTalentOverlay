@@ -269,10 +269,9 @@ async function saveConfig(next, successMessage = t('saved'), notify = true) {
 }
 
 async function load() {
-  const [status, config, update] = await Promise.all([
+  const [status, config] = await Promise.all([
     fetch('/api/status').then(response => response.json()),
     fetch('/api/config').then(response => response.json()),
-    fetch('/api/update').then(response => response.json()).catch(() => null),
   ]);
   configState = { ...config, overlayStyle: { ...defaultStyle, ...(config.overlayStyle || {}) } };
   applyLanguage(configState.uiLanguage);
@@ -280,7 +279,8 @@ async function load() {
   fillStyleForm(configState.overlayStyle);
   setStyleDirty(false);
   render(status);
-  renderUpdate(update);
+  // GitHub is optional: local match rendering must not wait for the network.
+  fetch('/api/update').then(response => response.json()).then(renderUpdate).catch(() => {});
   if (!configState.setupCompleted) showWizardStep(1);
 }
 
@@ -349,11 +349,8 @@ $('#install-update').addEventListener('click', async event => {
 $('#overlay-preview').addEventListener('load', () => { previewStyle(); fitPreview(); });
 new ResizeObserver(fitPreview).observe($('.preview-stage'));
 
-load().catch(error => showToast(error.message, true));
-setInterval(() => fetch('/api/update').then(response => response.json()).then(renderUpdate).catch(() => {}), 60 * 60 * 1000);
-const events = new EventSource('/events');
-events.onmessage = event => {
-  const next = JSON.parse(event.data);
+load().catch(error => showToast(error.message, true)).finally(() => watchStatus(next => {
   if (next.uiLanguage && next.uiLanguage !== language) applyLanguage(next.uiLanguage);
   render(next);
-};
+}));
+setInterval(() => fetch('/api/update').then(response => response.json()).then(renderUpdate).catch(() => {}), 60 * 60 * 1000);

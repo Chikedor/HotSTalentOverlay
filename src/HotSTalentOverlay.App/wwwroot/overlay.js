@@ -137,6 +137,4 @@ window.addEventListener('message', event => {
   }
 });
 
-fetch('/api/status').then(response => response.json()).then(render);
-const events = new EventSource('/events');
-events.onmessage = event => render(JSON.parse(event.data));
+watchStatus(render);

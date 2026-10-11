@@ -22,7 +22,7 @@ Show your *Heroes of the Storm* talent choices on stream, with the real in-game 
 - Automatically detects the installed HotS build.
 - Extracts hero, talent, and icon data directly from the local CASC game files.
 - Regenerates the catalog when the game build changes.
-- Updates OBS live through Server-Sent Events—no browser polling or manual refresh.
+- Updates OBS automatically through short local status checks every second—no manual refresh, and no permanent connections blocking talent images when several tabs are open.
 - Provides a complete dashboard in English and Spanish.
 - Checks GitHub for new releases and updates itself with one click from the dashboard.
 - Lets you personalize colors, borders, spacing, labels, and animations with a live preview.
@@ -157,7 +157,7 @@ Muestra tus talentos de *Heroes of the Storm* en directo con los iconos reales d
 - Detecta automáticamente la build instalada de HotS.
 - Extrae héroes, talentos e iconos directamente de los archivos CASC locales.
 - Regenera el catálogo cuando cambia la build del juego.
-- Actualiza OBS mediante Server-Sent Events, sin polling ni recargas manuales.
+- Actualiza OBS automáticamente con consultas locales cortas cada segundo: sin recargas manuales ni conexiones permanentes que bloqueen las imágenes al abrir varias pestañas.
 - Ofrece un panel completo en español e inglés.
 - Comprueba si hay nuevas versiones en GitHub y se actualiza con un clic desde el panel.
 - Permite personalizar colores, bordes, espaciado, textos y animaciones con vista previa en directo.
