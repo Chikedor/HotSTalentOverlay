@@ -40,6 +40,8 @@ The installer adds Start menu and optional desktop/startup shortcuts. The app ru
 
 When a new release is available, the dashboard displays **New version available — Update and restart**. The app downloads the official GitHub installer, updates in place, and reopens automatically without deleting your settings.
 
+Your installed version is always shown below the dashboard title and in the Windows tray menu, even without internet. It identifies the running app, not the latest GitHub release.
+
 ### Build from source
 
 Open PowerShell in the repository and run:
@@ -77,6 +79,8 @@ Open the dashboard and use **Appearance** to tailor the overlay without editing 
 - Preview starts **Live**. **With talents** and **Without talents** are explicitly labeled simulations and never change OBS; empty hidden slots stay hidden after a match.
 - Clears the overlay when the final replay is saved; later saves from that match cannot restore it.
 - Show or hide the hero name, talent levels, and localized talent names.
+- Talent names wrap in full instead of being shortened with ellipses. Choose Segoe UI, Arial, Verdana, Tahoma, Trebuchet MS, or Georgia; adjust text size, bold, line spacing, and shadow. Typography controls appear when **Talent names** is enabled.
+- Names grow downward without moving the icons. The app never changes your OBS source dimensions; very large text still needs enough height in your existing Browser Source.
 - Show unselected talent slots or hide them while keeping their space reserved.
 - Preview every change instantly; it is saved automatically for OBS and future sessions.
 
@@ -177,6 +181,8 @@ El instalador añade accesos directos al menú Inicio y, opcionalmente, al escri
 
 Cuando existe una nueva versión, el panel muestra **Nueva versión disponible — Actualizar y reiniciar**. La aplicación descarga el instalador oficial de GitHub, se actualiza sobre la instalación existente y vuelve a abrirse sin borrar tu configuración.
 
+La versión instalada aparece siempre bajo el título del panel y en el menú de la bandeja de Windows, incluso sin internet. Identifica la aplicación que está ejecutándose, no la última release de GitHub.
+
 ### Compilar desde el código fuente
 
 Abre PowerShell en el repositorio y ejecuta:
@@ -214,6 +220,8 @@ Abre el panel y usa **Apariencia** para adaptar el overlay sin editar CSS:
 - La vista previa empieza **En vivo**. **Con talentos** y **Sin talentos** son simulaciones señalizadas que nunca cambian OBS; los huecos ocultos siguen ocultos al terminar la partida.
 - Vacía el overlay cuando se guarda la replay final; los guardados posteriores de esa partida no lo vuelven a llenar.
 - Muestra u oculta el nombre del héroe, los niveles y los nombres localizados de los talentos.
+- Los nombres se muestran completos en varias líneas, sin puntos suspensivos. Elige Segoe UI, Arial, Verdana, Tahoma, Trebuchet MS o Georgia; ajusta tamaño, negrita, interlineado y sombra. Estos controles aparecen al activar **Nombres de talentos**.
+- El texto crece hacia abajo sin mover los iconos. La app no cambia las dimensiones de tu fuente de OBS; si eliges texto muy grande, tu Fuente de navegador debe tener suficiente altura.
 - Muestra los huecos de talentos sin elegir u ocúltalos manteniendo reservado su espacio.
 - Previsualiza cada cambio al instante y guárdalo para OBS y las próximas sesiones.
 

@@ -42,6 +42,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.MapGet("/api/status", (RuntimeState state, ConfigStore config) => Results.Ok(state.Snapshot with
 {
+    AppVersion = UpdateService.CurrentVersion,
     BattleTag = config.Current.BattleTag,
     UiLanguage = config.Current.UiLanguage,
     OverlayStyle = config.Current.OverlayStyle,

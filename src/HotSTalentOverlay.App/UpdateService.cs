@@ -17,6 +17,7 @@ public sealed record UpdateStatus(
 
 public sealed class UpdateService(HttpClient http, IHostApplicationLifetime lifetime, ILogger<UpdateService> logger)
 {
+    public static string CurrentVersion => GetCurrentVersion().ToString(3);
     private const string LatestReleaseApi = "https://api.github.com/repos/Chikedor/HotSTalentOverlay/releases/latest";
     private const string InstallerAssetName = "HotSTalentOverlay-Setup.exe";
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -31,7 +32,7 @@ public sealed class UpdateService(HttpClient http, IHostApplicationLifetime life
             if (!force && _cached?.CheckedAt is DateTimeOffset checkedAt && DateTimeOffset.UtcNow - checkedAt < TimeSpan.FromMinutes(15))
                 return _cached;
 
-            string currentText = GetCurrentVersion().ToString(3);
+            string currentText = CurrentVersion;
             try
             {
                 using HttpRequestMessage request = new(HttpMethod.Get, LatestReleaseApi);

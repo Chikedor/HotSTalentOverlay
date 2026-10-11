@@ -30,11 +30,13 @@ public static class WindowsShell
         using NotifyIcon tray = new()
         {
             Icon = SystemIcons.Application,
-            Text = TrayTitle,
+            Text = $"{TrayTitle} v{UpdateService.CurrentVersion}",
             Visible = true,
             ContextMenuStrip = menu,
         };
         ToolStripMenuItem update = new() { Visible = false, Font = new Font(menu.Font, FontStyle.Bold) };
+        menu.Items.Add(new ToolStripMenuItem($"Versión instalada / Installed version: {UpdateService.CurrentVersion}") { Enabled = false });
+        menu.Items.Add(new ToolStripSeparator());
         ToolStripSeparator updateSeparator = new() { Visible = false };
         menu.Items.Add(update);
         menu.Items.Add(updateSeparator);
@@ -50,7 +52,7 @@ public static class WindowsShell
             update.Visible = updateSeparator.Visible = status.Available;
             update.Enabled = true;
             update.Text = $"Actualizar a {status.LatestVersion} y reiniciar / Update to {status.LatestVersion} and restart";
-            tray.Text = status.Available ? $"{TrayTitle} · {status.LatestVersion}" : TrayTitle;
+            tray.Text = $"{TrayTitle} v{UpdateService.CurrentVersion}";
         }
         async void RefreshUpdate(bool force)
         {

@@ -96,3 +96,17 @@ test('status updates during match exit do not restart its countdown', () => {
   h.advance();
   assert.equal(h.properties.get('--icon-size'), '120px');
 });
+test('talent typography preferences reach the overlay without changing icon size', () => {
+  const h = harness('');
+  h.feed({ ...playing, overlayStyle: { ...empty.overlayStyle, nameFontFamily: 'verdana', nameFontSize: 20, nameBold: false, nameLineHeight: 160, nameShadow: false } });
+  assert.equal(h.properties.get('--name-font-family'), 'Verdana, sans-serif');
+  assert.equal(h.properties.get('--name-font-size'), '20px');
+  assert.equal(h.properties.get('--name-font-weight'), '400');
+  assert.equal(h.properties.get('--name-line-height'), '1.6');
+  assert.equal(h.properties.get('--name-shadow'), 'none');
+  assert.equal(h.properties.get('--icon-size'), '84px');
+});
+test('unknown fonts fall back to the default font', () => {
+  const h = harness(''); h.feed({ ...playing, overlayStyle: { nameFontFamily: 'missing-font' } });
+  assert.equal(h.properties.get('--name-font-family'), '"Segoe UI", sans-serif');
+});

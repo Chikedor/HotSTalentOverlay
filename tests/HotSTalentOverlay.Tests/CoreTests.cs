@@ -114,6 +114,42 @@ public sealed class CoreTests : IDisposable
     }
 
     [Fact]
+    public async Task TalentTypographyPersistsWithoutReplacingExistingAppearance()
+    {
+        AppPaths paths = new(Path.Combine(_root, "typography-state"));
+        await File.WriteAllTextAsync(paths.ConfigFile, """{"overlayStyle":{"iconSize":100,"entryAnimation":"pop","showEmptySlots":false}}""", TestContext.Current.CancellationToken);
+        ConfigStore store = new(paths);
+        JsonElement legacy = JsonSerializer.SerializeToElement(store.Current, JsonOptions.Default).GetProperty("overlayStyle");
+        Assert.True(legacy.TryGetProperty("nameFontSize", out JsonElement size));
+        Assert.Equal(12, size.GetInt32());
+        Assert.Equal(100, store.Current.OverlayStyle.IconSize);
+        Assert.Equal("pop", store.Current.OverlayStyle.EntryAnimation);
+        Assert.False(store.Current.OverlayStyle.ShowEmptySlots);
+        AppConfig changed = JsonSerializer.Deserialize<AppConfig>("""{"overlayStyle":{"nameFontFamily":"georgia","nameFontSize":24,"nameBold":false,"nameLineHeight":170,"nameShadow":false}}""", JsonOptions.Default)!;
+        await store.SaveAsync(changed, TestContext.Current.CancellationToken);
+        JsonElement saved = JsonSerializer.SerializeToElement(new ConfigStore(paths).Current, JsonOptions.Default).GetProperty("overlayStyle");
+        Assert.Equal("georgia", saved.GetProperty("nameFontFamily").GetString());
+        Assert.Equal(24, saved.GetProperty("nameFontSize").GetInt32());
+        Assert.Equal(170, saved.GetProperty("nameLineHeight").GetInt32());
+        Assert.False(saved.GetProperty("nameBold").GetBoolean());
+        Assert.False(saved.GetProperty("nameShadow").GetBoolean());
+    }
+
+    [Theory]
+    [InlineData("remote-font", 12, 130)]
+    [InlineData("segoe", 7, 130)]
+    [InlineData("segoe", 33, 130)]
+    [InlineData("segoe", 12, 99)]
+    [InlineData("segoe", 12, 201)]
+    public async Task InvalidTypographyIsRejected(string font, int size, int lineHeight)
+    {
+        ConfigStore store = new(new AppPaths(Path.Combine(_root, "invalid-typography")));
+        string json = JsonSerializer.Serialize(new { overlayStyle = new { nameFontFamily = font, nameFontSize = size, nameLineHeight = lineHeight } });
+        AppConfig invalid = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions.Default)!;
+        await Assert.ThrowsAnyAsync<ArgumentException>(() => store.SaveAsync(invalid, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
     public async Task SnapshotCopyCanReadSourceSharedForWriting()
     {
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;

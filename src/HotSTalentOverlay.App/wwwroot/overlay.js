@@ -7,6 +7,11 @@ const fallbackStyle = {
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
   showHero: true, showLevels: true, showTalentNames: false, showEmptySlots: true,
   entryAnimation: 'slide', animationSpeed: 100, exitAnimation: 'fade', exitDurationMs: 450,
+  nameFontFamily: 'segoe', nameFontSize: 12, nameBold: true, nameLineHeight: 130, nameShadow: true,
+};
+const nameFonts = {
+  segoe: '"Segoe UI", sans-serif', arial: 'Arial, sans-serif', verdana: 'Verdana, sans-serif',
+  tahoma: 'Tahoma, sans-serif', trebuchet: '"Trebuchet MS", sans-serif', georgia: 'Georgia, serif',
 };
 let activeStyle = fallbackStyle;
 let initialized = false;
@@ -45,6 +50,11 @@ function applyStyle(style) {
   root.setProperty('--entry-duration', `${0.45 * 100 / activeStyle.animationSpeed}s`);
   root.setProperty('--exit-duration', `${activeStyle.exitDurationMs}ms`);
   overlay.dataset.exitAnimation = activeStyle.exitAnimation;
+  root.setProperty('--name-font-family', nameFonts[activeStyle.nameFontFamily] || nameFonts.segoe);
+  root.setProperty('--name-font-size', `${activeStyle.nameFontSize}px`);
+  root.setProperty('--name-font-weight', activeStyle.nameBold ? '700' : '400');
+  root.setProperty('--name-line-height', String(activeStyle.nameLineHeight / 100));
+  root.setProperty('--name-shadow', activeStyle.nameShadow ? '0 2px 4px #000, 0 0 5px #000' : 'none');
   hero.hidden = !activeStyle.showHero;
   for (const slot of slots.children) {
     slot.querySelector('.level').hidden = !activeStyle.showLevels;

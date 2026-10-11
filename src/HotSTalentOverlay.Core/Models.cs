@@ -31,6 +31,11 @@ public sealed record OverlayStyleConfig
     public int AnimationSpeed { get; init; } = 100;
     public string ExitAnimation { get; init; } = "fade";
     public int ExitDurationMs { get; init; } = 450;
+    public string NameFontFamily { get; init; } = "segoe";
+    public int NameFontSize { get; init; } = 12;
+    public bool NameBold { get; init; } = true;
+    public int NameLineHeight { get; init; } = 130;
+    public bool NameShadow { get; init; } = true;
 }
 
 public sealed record TalentCatalogEntry(
@@ -73,6 +78,7 @@ public sealed record ReplaySnapshot(
 
 public sealed record AppStatus
 {
+    public string AppVersion { get; init; } = string.Empty;
     public bool HotsDetected { get; init; }
     public string HotsPath { get; init; } = string.Empty;
     public string GameVersion { get; init; } = string.Empty;

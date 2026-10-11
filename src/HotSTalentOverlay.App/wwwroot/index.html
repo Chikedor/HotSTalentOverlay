@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>HotS Talent Overlay</title>
-  <link rel="stylesheet" href="app.css?v=1.4.5">
+  <link rel="stylesheet" href="app.css?v=1.4.6">
 </head>
 <body>
   <a class="skip-link" href="#content" data-i18n="skip">Saltar al contenido</a>
@@ -45,6 +45,7 @@
         <div>
           <span class="eyebrow" data-i18n="localControl">CONTROL LOCAL</span>
           <h1>HotS Talent Overlay</h1>
+          <span id="installed-version" class="installed-version"></span>
           <p data-i18n="tagline">Tus talentos en OBS, automáticamente y sin salir de tu PC.</p>
         </div>
       </div>
@@ -127,6 +128,20 @@
             </div>
           </fieldset>
 
+          <fieldset id="typographyControls" hidden>
+            <legend data-i18n="typography">Texto de los talentos</legend>
+            <p class="section-description" data-i18n="typographyHelp">Los nombres completos se ajustan en varias líneas, sin puntos suspensivos.</p>
+            <div class="control-grid">
+              <label><span data-i18n="nameFontFamily">Fuente</span><select id="nameFontFamily"><option value="segoe">Segoe UI</option><option value="arial">Arial</option><option value="verdana">Verdana</option><option value="tahoma">Tahoma</option><option value="trebuchet">Trebuchet MS</option><option value="georgia">Georgia</option></select></label>
+              <label><span data-i18n="nameFontSize">Tamaño del texto</span><span class="range-row"><input id="nameFontSize" type="range" min="8" max="32"><output for="nameFontSize"></output></span></label>
+              <label class="wide-control"><span data-i18n="nameLineHeight">Interlineado</span><span class="range-row"><input id="nameLineHeight" type="range" min="100" max="200" step="5"><output for="nameLineHeight"></output></span></label>
+            </div>
+            <div class="switch-grid essential-switches">
+              <label class="switch"><input id="nameBold" type="checkbox"><span aria-hidden="true"></span><b data-i18n="nameBold">Negrita</b></label>
+              <label class="switch"><input id="nameShadow" type="checkbox"><span aria-hidden="true"></span><b data-i18n="nameShadow">Sombra del texto</b></label>
+            </div>
+          </fieldset>
+
           <details class="more-options">
             <summary><span data-i18n="moreOptions">Más opciones</span><small data-i18n="moreOptionsHelp">Bordes, fondo, espaciado y velocidad</small></summary>
             <fieldset>
@@ -186,7 +201,7 @@
     <section id="error" class="error" role="alert" hidden></section>
     <footer><span data-i18n="privacyFooter">100 % local · Sin telemetría · Tus partidas no salen de este equipo</span></footer>
   </main>
-  <script src="status-polling.js?v=1.4.5"></script>
-  <script src="app.js?v=1.4.5"></script>
+  <script src="status-polling.js?v=1.4.6"></script>
+  <script src="app.js?v=1.4.6"></script>
 </body>
 </html>

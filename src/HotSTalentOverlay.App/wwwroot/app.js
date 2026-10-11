@@ -5,6 +5,7 @@ const defaultStyle = {
   borderWidth: 2, borderRadius: 10, borderStyle: 'solid', iconSize: 84, gap: 10,
   showHero: true, showLevels: true, showTalentNames: false, showEmptySlots: true,
   entryAnimation: 'slide', animationSpeed: 100, exitAnimation: 'fade', exitDurationMs: 450,
+  nameFontFamily: 'segoe', nameFontSize: 12, nameBold: true, nameLineHeight: 130, nameShadow: true,
 };
 const presets = {
   classic: { ...defaultStyle },
@@ -14,6 +15,7 @@ const presets = {
 };
 const i18n = {
   es: {
+    installedVersion: 'Versión instalada: {version}', typography: 'Texto de los talentos', typographyHelp: 'Los nombres completos se ajustan en varias líneas, sin puntos suspensivos.', nameFontFamily: 'Fuente', nameFontSize: 'Tamaño del texto', nameBold: 'Negrita', nameLineHeight: 'Interlineado', nameShadow: 'Sombra del texto',
     exitAnimation: 'Al terminar la partida', exitDuration: 'Duración de salida', previewExit: 'Probar salida', up: 'Hacia arriba', down: 'Hacia abajo', left: 'Hacia la izquierda', right: 'Hacia la derecha', simulation: 'Simulación', previewHelp: 'Las simulaciones solo afectan a esta vista, nunca a OBS.',
     skip: 'Saltar al contenido', localControl: 'CONTROL LOCAL', tagline: 'Tus talentos en OBS, automáticamente y sin salir de tu PC.', language: 'Idioma', interfaceLanguage: 'Idioma de la interfaz', status: 'Estado', overlayPreview: 'Preview del overlay', setupTitle: 'Configuración inicial', firstSetup: 'PRIMERA CONFIGURACIÓN', welcomeTitle: 'Vamos a dejarlo preparado', welcomeText: 'Solo tardaremos un minuto. Primero, elige el idioma de la interfaz.', gameCheck: 'COMPROBACIÓN DEL JUEGO', gameCheckTitle: 'Buscando Heroes of the Storm', gameCheckText: 'Comprobamos automáticamente el juego y la carpeta de partidas.', gameInstalled: 'Juego instalado', matchesFolder: 'Carpeta de partidas', detected: 'Detectado', notFound: 'No encontrado', continue: 'Continuar', obsSetupTitle: 'Añádelo a OBS', obsSetupText: 'En OBS crea una Fuente de navegador, pega esta URL y usa un lienzo transparente.', obsStep1: 'Añadir fuente', obsStep2: 'Elegir Navegador', obsStep3: 'Pegar la URL', finishSetup: 'Terminar configuración', rerunSetup: 'Repetir asistente', setupDone: 'Configuración terminada.',
     localCatalog: 'CATÁLOGO LOCAL', liveDetector: 'DETECTOR EN DIRECTO', currentMatch: 'PARTIDA ACTUAL', appearance: 'APARIENCIA',
@@ -36,6 +38,7 @@ const i18n = {
     updateAvailable: 'Nueva versión disponible', updateRestart: 'Actualizar y reiniciar', updating: 'Descargando actualización…', updateVersion: 'Versión {current} → {latest}',
   },
   en: {
+    installedVersion: 'Installed version: {version}', typography: 'Talent text', typographyHelp: 'Full names wrap across multiple lines, without ellipses.', nameFontFamily: 'Font', nameFontSize: 'Text size', nameBold: 'Bold', nameLineHeight: 'Line spacing', nameShadow: 'Text shadow',
     exitAnimation: 'When the match ends', exitDuration: 'Exit duration', previewExit: 'Preview exit', up: 'Slide up', down: 'Slide down', left: 'Slide left', right: 'Slide right', simulation: 'Simulation', previewHelp: 'Simulations only affect this preview, never OBS.',
     skip: 'Skip to content', localControl: 'LOCAL CONTROL', tagline: 'Your talents in OBS, automatically and entirely on your PC.', language: 'Language', interfaceLanguage: 'Interface language', status: 'Status', overlayPreview: 'Overlay preview', setupTitle: 'Initial setup', firstSetup: 'FIRST-TIME SETUP', welcomeTitle: 'Let’s get everything ready', welcomeText: 'This takes about a minute. First, choose the interface language.', gameCheck: 'GAME CHECK', gameCheckTitle: 'Finding Heroes of the Storm', gameCheckText: 'We automatically check the game and match folder.', gameInstalled: 'Game installed', matchesFolder: 'Match folder', detected: 'Detected', notFound: 'Not found', continue: 'Continue', obsSetupTitle: 'Add it to OBS', obsSetupText: 'In OBS create a Browser Source, paste this URL and use a transparent canvas.', obsStep1: 'Add source', obsStep2: 'Choose Browser', obsStep3: 'Paste the URL', finishSetup: 'Finish setup', rerunSetup: 'Run setup again', setupDone: 'Setup complete.',
     localCatalog: 'LOCAL CATALOG', liveDetector: 'LIVE DETECTOR', currentMatch: 'CURRENT MATCH', appearance: 'APPEARANCE',
@@ -111,6 +114,7 @@ function translateCatalogStatus(value) {
 
 function render(next) {
   appState = next;
+  $('#installed-version').textContent = next.appVersion ? t('installedVersion', { version: `v${next.appVersion}` }) : '';
   const healthy = next.hotsDetected && next.catalogReady && next.watcherRunning;
   $('#health').textContent = healthy ? t('ready') : t('attention');
   $('#health').classList.toggle('ok', healthy);
@@ -190,10 +194,10 @@ function updateWizardStatus() {
 
 function fillStyleForm(style) {
   const resolved = { ...defaultStyle, ...(style || {}) };
-  for (const key of ['accentColor', 'borderColor', 'backgroundColor', 'textColor', 'borderWidth', 'borderRadius', 'borderStyle', 'iconSize', 'gap', 'entryAnimation', 'animationSpeed', 'exitAnimation', 'exitDurationMs']) {
+  for (const key of ['accentColor', 'borderColor', 'backgroundColor', 'textColor', 'borderWidth', 'borderRadius', 'borderStyle', 'iconSize', 'gap', 'entryAnimation', 'animationSpeed', 'exitAnimation', 'exitDurationMs', 'nameFontFamily', 'nameFontSize', 'nameLineHeight']) {
     $(`#${key}`).value = resolved[key];
   }
-  for (const key of ['showHero', 'showLevels', 'showTalentNames', 'showEmptySlots']) $(`#${key}`).checked = resolved[key];
+  for (const key of ['showHero', 'showLevels', 'showTalentNames', 'showEmptySlots', 'nameBold', 'nameShadow']) $(`#${key}`).checked = resolved[key];
   updateOutputs();
   updateDependentControls();
   previewStyle();
@@ -207,14 +211,17 @@ function readStyleForm() {
     showLevels: $('#showLevels').checked, showTalentNames: $('#showTalentNames').checked, showEmptySlots: $('#showEmptySlots').checked,
     entryAnimation: $('#entryAnimation').value, animationSpeed: Number($('#animationSpeed').value),
     exitAnimation: $('#exitAnimation').value, exitDurationMs: Number($('#exitDurationMs').value),
+    nameFontFamily: $('#nameFontFamily').value, nameFontSize: Number($('#nameFontSize').value),
+    nameBold: $('#nameBold').checked, nameLineHeight: Number($('#nameLineHeight').value), nameShadow: $('#nameShadow').checked,
   };
 }
 
 function updateOutputs() {
   for (const id of ['accentColor', 'borderColor', 'backgroundColor', 'textColor']) $(`output[for="${id}"]`).textContent = $(`#${id}`).value;
-  for (const id of ['iconSize', 'borderWidth', 'borderRadius', 'gap']) $(`output[for="${id}"]`).textContent = `${$(`#${id}`).value}px`;
+  for (const id of ['iconSize', 'borderWidth', 'borderRadius', 'gap', 'nameFontSize']) $(`output[for="${id}"]`).textContent = `${$(`#${id}`).value}px`;
   $('output[for="animationSpeed"]').textContent = `${$('#animationSpeed').value}%`;
   $('output[for="exitDurationMs"]').textContent = `${$('#exitDurationMs').value} ms`;
+  $('output[for="nameLineHeight"]').textContent = `${$('#nameLineHeight').value}%`;
 }
 
 function setStyleDirty(dirty) {
@@ -243,6 +250,7 @@ function scheduleStyleSave() {
 }
 
 function updateDependentControls() {
+  $('#typographyControls').hidden = !$('#showTalentNames').checked;
   const borderDisabled = $('#borderStyle').value === 'none';
   $('#borderWidth').disabled = borderDisabled;
   $('#borderWidthControl').classList.toggle('control-disabled', borderDisabled);

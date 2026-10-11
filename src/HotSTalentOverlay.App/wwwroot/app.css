@@ -59,6 +59,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .brand-mark { display: grid; place-items: center; width: 48px; height: 48px; flex: 0 0 auto; border: 1px solid #c3b8ff55; border-radius: 15px; background: linear-gradient(145deg, #8f72ff, #3e287f); box-shadow: 0 12px 35px #6f4dea44; font: 800 24px/1 Georgia, serif; }
 h1, h2, p { margin-top: 0; }
 h1 { margin-bottom: 3px; font-size: clamp(28px, 4vw, 44px); letter-spacing: -.045em; line-height: 1; }
+.installed-version { display: block; margin-top: 7px; color: var(--muted); font-size: 12px; }
+#typographyControls .section-description { margin: 0 0 16px; font-size: 12px; line-height: 1.5; }
 h2 { margin-bottom: 0; font-size: clamp(19px, 2vw, 25px); letter-spacing: -.02em; }
 .brand p, .section-description, .match-panel p { margin: 7px 0 0; color: var(--muted); }
 .eyebrow { display: block; margin-bottom: 7px; color: #aaa0dd; font-size: 11px; font-weight: 800; letter-spacing: .14em; }
